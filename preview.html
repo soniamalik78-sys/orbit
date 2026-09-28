@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ORBIT for Citi — Executive Preview | Sonia Malik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F0F0EF; --ink: #33363B; --ink-soft: #5A5D63; --ink-faint: #62656B;
+    --teal: #2F9E58; --teal-soft: #3E9E5F; --teal-bg: #E6F6EA;
+    --brass: #E3A429; --brass-soft: #B47A12; --brass-bg: #FEF3DC;
+    --coral: #D6455A; --coral-bg: #FDE5E6;
+    --line: #DDDDDB; --line-strong: #CACAC7; --card: #FFFFFF;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .serif { font-family:"Fraunces", Georgia, serif; }
+  .mono { font-family:"IBM Plex Mono", monospace; }
+  .wrap { max-width: 980px; margin:0 auto; padding: 3.2rem 1.5rem 5rem; }
+  @media (max-width:560px){ .wrap{ padding:2rem 1.1rem 3rem; } }
+
+  .eyebrow { color:var(--brass-soft); font-size:0.85rem; margin-bottom:0.5rem; }
+  h1.title { font-family:"Fraunces",Georgia,serif; font-weight:500; font-size:clamp(1.5rem,4vw,2.05rem); line-height:1.24; margin:0 0 1rem; max-width:38ch; }
+  p.intro { color:var(--ink-soft); max-width:72ch; font-size:1.01rem; margin-bottom:1.6rem; }
+  p.note { color:var(--ink-faint); font-size:0.86rem; max-width:72ch; margin-bottom:2rem; font-style:italic; }
+
+  .stepper { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1.8rem; }
+  .step-btn { flex:0 0 auto; min-width:118px; max-width:150px; background:none; border:1px solid var(--line-strong); border-radius:8px; padding:0.6rem 0.55rem; cursor:pointer; text-align:left; font-family:inherit; color:var(--ink-faint); transition:border-color .15s, background .15s; }
+  .step-btn .n { font-family:"Fraunces",Georgia,serif; font-size:0.9rem; color:var(--brass-soft); }
+  .step-btn .l { display:block; font-size:0.75rem; margin-top:0.15rem; line-height:1.25; }
+  .step-btn.active, .step-btn.in-view { border-color:var(--teal); background:var(--teal-bg); color:var(--ink); }
+  .step-btn.active .l, .step-btn.in-view .l { color:var(--ink); }
+  .step-btn:hover:not(.in-view){ border-color:var(--ink-faint); }
+  .step-btn.gate-btn { border-style: dashed; }
+
+  .phase-label { font-size:0.78rem; color:var(--ink-faint); margin: -0.8rem 0 1rem; }
+
+  .stage-section { padding: 2.6rem 0; border-top: 1px solid var(--line-strong); scroll-margin-top: 200px; }
+  .stage-section:first-child { border-top: none; padding-top: 0.5rem; }
+  .section-heading { display: flex; align-items: flex-start; gap: 0.9rem; margin-bottom: 1.3rem; flex-wrap: wrap; }
+  .section-n { font-size: 1.5rem; color: var(--brass-soft); flex: 0 0 auto; line-height: 1.3; }
+  .section-title { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 1.25rem; margin: 0; color: var(--ink); }
+  .section-phase { font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.2rem; }
+  .section-role-tag { margin-top: 0.25rem; margin-left: auto; flex: 0 0 auto; font-size: 0.72rem; padding: 0.2rem 0.6rem; cursor: default; }
+  .section-summary { font-size: 0.92rem; color: var(--ink-soft); margin-top: 0.5rem; max-width: 60ch; line-height: 1.5; }
+  .section-toggle {
+    margin: 1rem 0 0; background: none; border: 1px solid var(--line-strong); border-radius: 20px;
+    padding: 0.4rem 0.9rem; font-size: 0.8rem; color: var(--ink-faint); cursor: pointer; font-family: inherit;
+  }
+  .section-toggle:hover { border-color: var(--teal-soft); color: var(--teal-soft); }
+  .section-toggle .chev { display: inline-block; transition: transform .15s; }
+  .section-toggle .chev.open { transform: rotate(90deg); }
+  .section-body { margin-top: 1.4rem; }
+  .section-body.collapsed { display: none; }
+
+  .grid { display:grid; grid-template-columns: 1.15fr 1fr; gap: 1.1rem; align-items:start; }
+  @media (max-width:800px){ .grid{ grid-template-columns:1fr; } }
+
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1.4rem 1.4rem 1.5rem; margin-bottom:1.1rem; }
+  .panel h3 { font-size:0.82rem; font-weight:600; margin:0 0 0.9rem; display:flex; align-items:center; gap:0.5rem; }
+  .panel h3 .dot { width:9px; height:9px; border-radius:50%; }
+  .panel.agent h3 .dot { background:var(--teal); }
+  .panel.judge h3 .dot { background:var(--brass-soft); }
+  .panel.human h3 .dot { background:var(--coral); }
+
+  pre.output { white-space:pre-wrap; font-family:"IBM Plex Mono",monospace; font-size:0.85rem; color:var(--ink-soft); margin:0; line-height:1.55; }
+  pre.output.collapsed { display:none; }
+  pre.output.open { display:block; margin-top:0.8rem; padding-top:0.8rem; border-top:1px solid var(--line); }
+  .output-preview { font-size:0.94rem; color:var(--ink-soft); margin-bottom:0.7rem; line-height:1.5; }
+  .toggle-output { background:none; border:1px solid var(--line-strong); border-radius:20px; padding:0.3rem 0.75rem; font-size:0.76rem; color:var(--ink-faint); cursor:pointer; font-family:inherit; }
+  .toggle-output:hover { border-color:var(--teal-soft); color:var(--teal-soft); }
+  .toggle-output .chev { display:inline-block; transition:transform .15s; }
+  .toggle-output .chev.open { transform:rotate(90deg); }
+
+  .rsi-top { display:flex; align-items:center; gap:0.9rem; padding-bottom:1rem; margin-bottom:1rem; border-bottom:1px solid var(--line); }
+  .score-ring { width:58px; height:58px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:conic-gradient(var(--teal) calc(var(--pct)*1%), var(--line) 0); }
+  .ring-inner { width:46px; height:46px; border-radius:50%; background:var(--card); display:flex; align-items:center; justify-content:center; font-size:1.05rem; color:var(--ink); }
+  .rsi-top-label { font-size:0.78rem; color:var(--ink-faint); line-height:1.35; }
+  .score-chip { flex:0 0 32px; text-align:right; font-family:"IBM Plex Mono",monospace; font-size:0.76rem; padding:0.1rem 0; border-radius:10px; }
+  .score-chip.good { color:var(--teal-soft); }
+  .score-chip.mid { color:var(--brass-soft); }
+  .score-chip.low { color:var(--coral); }
+  .shared-asset { margin-top:1rem; padding:0.8rem 0.9rem; border-radius:8px; background:var(--brass-bg); color:var(--brass-soft); font-size:0.82rem; line-height:1.5; }
+  .shared-asset b { color:var(--ink); }
+
+  .rubric-row { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.75rem; }
+  .rubric-row .rlabel { flex:0 0 168px; font-size:0.8rem; color:var(--ink-faint); }
+  .rubric-row input[type=range] { flex:1 1 auto; accent-color:var(--brass-soft); }
+  .rubric-row .rval { flex:0 0 30px; text-align:right; font-family:"IBM Plex Mono",monospace; font-size:0.82rem; color:var(--ink); }
+  .rubric-note { font-size:0.78rem; color:var(--ink-faint); margin:0.4rem 0 1rem; }
+
+  .rsi-line { display:flex; justify-content:space-between; align-items:baseline; padding-top:0.9rem; margin-top:0.3rem; border-top:1px solid var(--line); }
+  .rsi-line .k { font-size:0.85rem; color:var(--ink-faint); }
+  .rsi-line .v { font-family:"Fraunces",Georgia,serif; font-size:1.5rem; color:var(--brass-soft); }
+
+  .crit-row { display:flex; justify-content:space-between; align-items:center; gap:0.7rem; padding:0.55rem 0; border-bottom:1px solid var(--line); }
+  .crit-row:last-child { border-bottom:none; }
+  .crit-row .clabel { font-size:0.86rem; color:var(--ink-soft); max-width: 62%; }
+  .crit-row .cdetail { display:block; font-size:0.75rem; color:var(--ink-faint); margin-top:0.15rem; }
+  .chip { font-family:"IBM Plex Mono",monospace; font-size:0.78rem; padding:0.2rem 0.55rem; border-radius:20px; white-space:nowrap; }
+  .chip.pass { background:var(--teal-bg); color:var(--teal-soft); }
+  .chip.fail { background:var(--coral-bg); color:var(--coral); }
+
+  .gate-badge { display:inline-block; font-family:"Fraunces",Georgia,serif; font-size:0.95rem; padding:0.3rem 0.8rem; border-radius:6px; margin-top:1rem; }
+  .gate-badge.pass { background:var(--teal-bg); color:var(--teal-soft); }
+  .gate-badge.fail { background:var(--coral-bg); color:var(--coral); }
+
+  .override-box { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--line); font-size:0.85rem; color:var(--ink-faint); }
+  .override-box label { display:flex; align-items:center; gap:0.5rem; cursor:pointer; }
+
+  .human-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.9rem; }
+  .human-row input[type=range] { flex:1 1 auto; accent-color:var(--coral); }
+  .human-row .hval { font-family:"IBM Plex Mono",monospace; font-size:1rem; flex:0 0 34px; text-align:right; }
+  button.submit { background:var(--ink); color:var(--paper); border:none; border-radius:7px; padding:0.55rem 1rem; font-size:0.85rem; cursor:pointer; font-family:inherit; }
+  button.submit:hover { opacity:0.88; }
+
+  .delta { font-size:0.85rem; color:var(--ink-faint); margin-top:0.7rem; }
+  .delta b { color:var(--ink); }
+
+  .telemetry { grid-column: 1 / -1; }
+  .telemetry .legend { display:flex; gap:1.4rem; font-size:0.82rem; color:var(--ink-faint); margin-bottom:0.8rem; flex-wrap:wrap; }
+  .telemetry .legend span.sw { display:inline-block; width:14px; height:2px; margin-right:0.4rem; position:relative; top:-3px; }
+  svg.chart { width:100%; height:auto; }
+
+  .closing { margin-top:1rem; padding-top:1.6rem; border-top:1px solid var(--line-strong); color:var(--ink-soft); font-size:0.95rem; max-width:74ch; }
+  .closing b { color:var(--ink); }
+  footer { margin-top:2rem; color:var(--ink-faint); font-size:0.85rem; }
+
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 80;
+    background: var(--line); pointer-events: none;
+  }
+  .scroll-progress-fill { height: 100%; width: 0%; background: var(--teal); transition: width 0.1s linear; }
+
+  .journey-bar {
+    position: sticky; top: calc(3px + env(safe-area-inset-top, 0px)); z-index: 50;
+    background: var(--paper); border-bottom: 1px solid var(--line-strong);
+    padding: 0.75rem 0 0.7rem;
+  }
+  .journey-bar-inner { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; }
+  @media (max-width:560px){ .journey-bar-inner{ padding:0 1.1rem; } }
+  .jb-top { display:flex; align-items:baseline; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.55rem; }
+  .jb-label { font-size:0.72rem; color:var(--brass-soft); font-weight:700; white-space:nowrap; text-transform:uppercase; letter-spacing:0.05em; }
+  .jb-problem { display:flex; gap:0.7rem; align-items:baseline; flex-wrap:wrap; margin-bottom:0.6rem; }
+  .jb-statement { font-size:0.88rem; color:var(--ink); line-height:1.45; flex:1 1 320px; }
+  .jb-kpis { display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; margin-top:0.6rem; }
+  .jb-kpi-label { font-size:0.7rem; font-weight:700; color:var(--teal-soft); text-transform:uppercase; letter-spacing:0.05em; margin-right:0.2rem; }
+  .jb-value { display:flex; gap:0.4rem; flex-wrap:wrap; }
+  .value-chip { font-size:0.72rem; padding:0.15rem 0.55rem; border-radius:20px; background:var(--teal-bg); color:var(--teal-soft); white-space:nowrap; }
+  .jb-steps { display:flex; align-items:center; gap:0.35rem 0.4rem; flex-wrap:wrap; }
+  .jb-step { display:flex; align-items:center; gap:0.4rem; flex:0 0 auto; }
+  .jb-step .jb-n {
+    width:22px; height:22px; border-radius:50%; border:1px solid var(--brass-soft); color:var(--brass-soft);
+    font-family:"Fraunces",Georgia,serif; font-size:0.72rem; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .jb-step .jb-l { font-size:0.78rem; color:var(--ink-soft); }
+  .jb-arrow { color:var(--line-strong); font-size:0.78rem; flex:0 0 auto; }
+
+  .plat-cols { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+  @media (max-width:800px){ .plat-cols{ grid-template-columns:1fr; } }
+  .plat-row { padding:0.65rem 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  .plat-row:last-child { border-bottom:none; }
+  .plat-row .pl-top { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; }
+  .plat-row .pl-label { font-size:0.9rem; font-weight:600; color:var(--ink); }
+  .plat-row .pl-label .chev { display:inline-block; color:var(--ink-faint); font-size:0.7rem; margin-right:0.4rem; transition:transform .15s; }
+  .plat-row.open .pl-label .chev { transform:rotate(90deg); }
+  .plat-row .pl-note { font-size:0.82rem; color:var(--ink-faint); margin-top:0; line-height:1.5; max-height:0; overflow:hidden; }
+  .plat-row.open .pl-note { max-height:200px; margin-top:0.4rem; }
+  .status-chip { font-size:0.72rem; padding:0.15rem 0.5rem; border-radius:20px; white-space:nowrap; font-family:"IBM Plex Mono",monospace; flex:0 0 auto; }
+  .status-chip.built { background:var(--teal-bg); color:var(--teal-soft); }
+  .status-chip.partial { background:var(--brass-bg); color:var(--brass-soft); }
+  .status-chip.planned { background:none; color:var(--ink-faint); border:1px dashed var(--line-strong); }
+  .plat-legend { display:flex; gap:1.2rem; font-size:0.78rem; color:var(--ink-faint); margin-bottom:1.2rem; flex-wrap:wrap; }
+  .plat-legend .lg-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:0.35rem; position:relative; top:-1px; }
+
+  @media (max-width:560px) {
+    .panel { padding:1.05rem 1.05rem 1.15rem; }
+    .panel h3 { font-size:0.78rem; }
+    pre.output { font-size:0.78rem; }
+    .rubric-row { flex-wrap:wrap; }
+    .rubric-row .rlabel { flex:1 1 100%; margin-bottom:0.15rem; }
+    .rubric-row input[type=range] { flex:1 1 auto; }
+    .rubric-note { display:none; }
+    .plat-row .pl-label { font-size:0.85rem; }
+    .plat-row .pl-note { font-size:0.79rem; }
+    .journey-bar { padding:0.55rem 0 0.5rem; }
+    .jb-top { margin-bottom:0.4rem; }
+    .jb-label { font-size:0.7rem; }
+    .value-chip { font-size:0.72rem; padding:0.1rem 0.45rem; }
+    .jb-step .jb-l { font-size:0.72rem; }
+    .jb-step .jb-n { width:19px; height:19px; font-size:0.72rem; }
+    .crit-row .clabel { font-size:0.8rem; max-width:56%; }
+    .closing { font-size:0.88rem; }
+    .cf-node { min-width:132px; padding:0.7rem 0.8rem; }
+    .cf-node .cf-t { font-size:0.82rem; }
+    .cf-node .cf-d { font-size:0.72rem; }
+  }
+
+  .concept { margin-bottom: 2.4rem; }
+  .concept-flow { display:flex; align-items:stretch; gap:0.5rem; padding: 0.3rem 0 0; }
+  .cf-node { flex:1 1 0; min-width:150px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:0.9rem 1rem; cursor:pointer; transition:border-color .15s, transform .15s; }
+  .cf-node:hover { border-color:var(--teal-soft); transform:translateY(-2px); }
+  .cf-node .cf-n { font-family:"Fraunces",Georgia,serif; font-size:0.95rem; color:var(--brass-soft); margin-bottom:0.3rem; }
+  .cf-node .cf-t { font-weight:600; font-size:0.92rem; color:var(--ink); margin-bottom:0.3rem; }
+  .cf-node .cf-d { font-size:0.78rem; color:var(--ink-faint); line-height:1.45; }
+  .cf-node .cf-tap { font-size:0.72rem; color:var(--teal-soft); margin-top:0.5rem; font-weight:600; }
+
+  .back-to-top {
+    position: fixed;
+    right: 1.2rem;
+    bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 30px;
+    padding: 0.65rem 1rem 0.65rem 0.85rem;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .back-to-top .arrow { font-size: 1rem; line-height: 1; }
+  .back-to-top:hover { opacity: 0.9; }
+  @media (max-width:560px) {
+    .back-to-top { right: 0.9rem; bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px)); padding: 0.55rem 0.85rem 0.55rem 0.7rem; font-size: 0.78rem; }
+  }
+
+  .step-btn.persona-match { box-shadow: inset 0 0 0 2px var(--role-color, var(--brass-soft)); }
+  .step-role-tag {
+    display: inline-block; margin-top: 0.3rem; font-size:0.72rem; font-weight: 600;
+    color: var(--role-color, var(--brass-soft)); border: 1px solid var(--role-color, var(--brass-soft)); border-radius: 10px;
+    padding: 0.05rem 0.4rem; cursor: pointer; background: var(--paper);
+  }
+  .step-role-tag:hover { opacity: 0.8; }
+  .step-role-tag.active-role { background: var(--role-color, var(--brass-soft)); color: #fff; }
+
+  .page-shell { display: block; }
+  .role-sidebar { display: none; }
+  @media (min-width: 860px) {
+    .page-shell { display: flex; align-items: flex-start; justify-content: center; gap: 1.4rem; }
+    .wrap { order: 1; }
+    .role-sidebar {
+      display: block; order: 2; flex: 0 0 190px;
+      position: sticky; top: 200px; max-height: calc(100vh - 220px); overflow-y: auto;
+      background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1rem;
+      margin-top: 3.2rem;
+    }
+    .rs-label { font-size: 0.75rem; color: var(--ink-faint); margin-bottom: 0.7rem; }
+    .rs-item {
+      display: block; width: 100%; text-align: left; background: none; border: none;
+      border-left: 3px solid transparent; padding: 0.55rem 0.6rem; margin-bottom: 0.15rem;
+      font-family: inherit; font-size: 0.85rem; color: var(--ink-soft); cursor: pointer; border-radius: 0 6px 6px 0;
+    }
+    .rs-item:hover { background: var(--paper); }
+    .rs-item.active {
+      border-left-color: var(--role-color, var(--brass-soft)); color: var(--ink); font-weight: 600;
+      background: var(--paper);
+      background: color-mix(in srgb, var(--role-color, var(--brass-soft)) 14%, white);
+    }
+    .rs-item .rs-count { display: block; font-size: 0.7rem; color: var(--ink-faint); font-weight: 400; margin-top: 0.1rem; }
+  }
+
+  .cf-arrow { flex:0 0 auto; display:flex; align-items:center; color:var(--line-strong); font-size:1.1rem; padding:0 0.1rem; }
+  .cf-loop { text-align:center; font-size:0.84rem; color:var(--ink-soft); margin-top:1.3rem; line-height:1.5; }
+
+  .stage-meta { display:grid; grid-template-columns:repeat(3, 1fr); gap:0.7rem; margin-top:1.1rem; }
+  @media (max-width:760px) { .stage-meta { grid-template-columns:1fr; } }
+  .sm-card { background:var(--card); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:8px; padding:0.7rem 0.8rem; }
+  .sm-card.okr { border-top-color:var(--brass); }
+  .sm-card.gate { border-top-color:var(--coral); }
+  .sm-k { font-size:0.72rem; font-weight:600; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.35rem; }
+  .sm-v { font-size:0.84rem; color:var(--ink); line-height:1.45; }
+  .sm-lbl { display:inline-block; font-size:0.72rem; font-weight:700; color:var(--coral); margin-right:0.35rem; text-transform:uppercase; }
+
+  .pane-title { font-size:1.2rem; color:var(--ink); margin-bottom:0.9rem; }
+  .outcomes { display:grid; grid-template-columns:1fr 1fr; gap:0.9rem; margin-top:1.6rem; }
+  @media (max-width:700px) { .outcomes { grid-template-columns:1fr; } }
+  .outcome-card { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:10px; padding:1rem 1.1rem; }
+  .outcome-card.quality { border-left-color:var(--brass); }
+  .oc-k { font-size:0.7rem; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.35rem; }
+  .oc-t { font-family:"Fraunces",Georgia,serif; font-size:1.05rem; color:var(--ink); margin-bottom:0.5rem; }
+  .outcome-card ul { margin:0; padding-left:1.1rem; color:var(--ink-soft); font-size:0.86rem; line-height:1.55; }
+  .devex { margin-top:1.2rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1.1rem; }
+  .devex-head p { margin:0 0 1rem; color:var(--ink-soft); font-size:0.9rem; line-height:1.55; }
+  .devex-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:0.7rem; }
+  @media (max-width:900px) { .devex-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px) { .devex-grid { grid-template-columns:1fr; } }
+  .dx-card { border-top:3px solid var(--role-color); background:var(--paper); border-radius:8px; padding:0.75rem 0.8rem; }
+  .dx-role { font-size:0.82rem; font-weight:700; color:var(--role-color); margin-bottom:0.3rem; }
+  .dx-v { font-size:0.8rem; color:var(--ink-soft); line-height:1.5; }
+
+  @media (max-width:560px) {
+    .journey-bar { position: static; }
+    .stage-section { scroll-margin-top: 16px; }
+    .jb-statement { font-size:0.82rem; }
+  }
+
+  .subtitle { font-size:clamp(1.05rem, 2.6vw, 1.3rem); color:var(--ink-soft); line-height:1.35; margin:-0.4rem 0 1.1rem; max-width:40ch; }
+  .dual { margin-bottom:1.3rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
+  .dual-lead { margin:0 0 0.9rem; color:var(--ink-soft); font-size:0.9rem; line-height:1.55; }
+  .dual-grid { display:flex; align-items:stretch; gap:0.6rem; }
+  @media (max-width:700px) { .dual-grid { flex-direction:column; } .dual-arrow { transform:rotate(90deg); align-self:center; } }
+  .dual-card { flex:1 1 0; border-radius:10px; padding:0.9rem 1rem; background:var(--paper); border:1px solid var(--line); }
+  .dual-card.builder { border-top:3px solid var(--teal); }
+  .dual-card.judge { border-top:3px solid var(--brass); }
+  .dual-n { font-size:1.1rem; color:var(--ink-faint); }
+  .dual-t { font-weight:700; color:var(--ink); font-size:0.95rem; margin:0.15rem 0 0.4rem; }
+  .dual-t span { display:block; font-weight:600; font-size:0.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.15rem; }
+  .dual-v { font-size:0.84rem; color:var(--ink-soft); line-height:1.5; }
+  .dual-arrow { display:flex; align-items:center; color:var(--line-strong); font-size:1.3rem; }
+  .dual-rule { margin-top:0.9rem; padding:0.7rem 0.9rem; border-radius:8px; background:var(--teal-bg); color:var(--ink); font-size:0.88rem; font-weight:600; line-height:1.45; }
+  .dual-note { margin-top:0.5rem; font-size:0.78rem; color:var(--ink-faint); }
+
+  .helix { letter-spacing:0.06em; color:var(--teal); }
+  .tagline { display:flex; flex-wrap:wrap; gap:0.35rem 0.6rem; align-items:center; margin:-0.3rem 0 0.9rem; font-size:0.8rem; font-weight:600; color:var(--ink-soft); }
+  .tagline .tl-sep { color:var(--line-strong); }
+
+  .status-chip.arc { background:var(--brass-bg); color:var(--brass-soft); }
+  .status-chip.helix { background:var(--teal-bg); color:var(--teal-soft); }
+  .status-chip.both { background:linear-gradient(90deg, var(--brass-bg), var(--teal-bg)); color:var(--ink); }
+  .status-chip.confirm { background:none; color:var(--ink-faint); border:1px dashed var(--line-strong); }
+
+  /* Return loop: from under box 4 (continuous learning) back up into box 1 (discovery) */
+  .concept-flow .cf-node { min-width:0; }
+  .loop-return {
+    position:relative; height:38px; margin:0 12% 0 12%;
+    border:2px solid var(--teal); border-top:none; border-radius:0 0 16px 16px;
+    cursor:pointer;
+  }
+  .loop-return:hover { border-color:var(--teal-soft); }
+  .lr-head {
+    position:absolute; left:-7px; top:-2px; width:0; height:0;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:9px solid var(--teal);
+  }
+  .lr-label {
+    position:absolute; left:50%; bottom:-0.8rem; transform:translateX(-50%);
+    background:var(--paper); padding:0.15rem 0.7rem; border-radius:20px; border:1px solid var(--teal);
+    font-size:0.8rem; font-weight:600; color:var(--teal-soft); white-space:nowrap;
+  }
+  @media (max-width:700px) {
+    .concept-flow { flex-direction:column; }
+    .concept-flow .cf-arrow { transform:rotate(90deg); align-self:center; }
+    .loop-return { height:auto; margin:0.8rem 0 0; border:none; }
+    .lr-head { display:none; }
+    .lr-label { position:static; transform:none; display:block; text-align:center; white-space:normal; }
+  }
+
+  .judge-meta { font-size:0.74rem; color:var(--ink-faint); margin:-0.4rem 0 0.9rem; line-height:1.45; }
+  .sh-badges { margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem; }
+  .sh-badges .section-role-tag { margin:0.25rem 0 0; }
+  .autonomy-badge { font-size:0.7rem; font-weight:600; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line-strong); border-radius:10px; padding:0.15rem 0.55rem; white-space:nowrap; }
+  @media (max-width:560px) { .sh-badges { margin-left:0; align-items:flex-start; flex-direction:row; flex-wrap:wrap; } }
+  .dora { display:inline-block; font-size:0.72rem; font-weight:700; color:var(--teal-soft); background:var(--teal-bg); border-radius:8px; padding:0.05rem 0.4rem; margin-right:0.3rem; }
+  .dual-extra { margin-top:0.55rem; padding-top:0.55rem; border-top:1px dashed var(--line-strong); font-size:0.8rem; }
+  .integrity, .autonomy-scale { margin-top:1rem; }
+  .integrity ul, ul.gx { margin:0.3rem 0 0; padding-left:1.1rem; color:var(--ink-soft); font-size:0.84rem; line-height:1.55; }
+  .as-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-top:0.4rem; }
+  @media (max-width:700px) { .as-row { grid-template-columns:1fr 1fr; } }
+  .as-cell { background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:0.55rem 0.65rem; font-size:0.78rem; color:var(--ink); }
+  .as-cell span { display:block; color:var(--ink-faint); font-size:0.74rem; margin-top:0.15rem; }
+  .as-note { margin-top:0.5rem; font-size:0.8rem; font-weight:600; color:var(--ink); }
+  .devex-measures { margin-top:0.9rem; font-size:0.82rem; color:var(--ink-soft); line-height:1.5; }
+  .trace { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; margin:0 0 1.2rem; }
+  .trace-lead { margin:0 0 0.7rem; font-size:0.86rem; color:var(--ink-soft); }
+  .trace-row { display:flex; flex-wrap:wrap; align-items:center; gap:0.4rem; }
+  .tr-chip { background:var(--paper); border:1px solid var(--line-strong); border-radius:8px; padding:0.35rem 0.6rem; font-family:inherit; font-size:0.78rem; color:var(--ink); cursor:pointer; text-align:left; }
+  .tr-chip:hover { border-color:var(--teal); }
+  .tr-k { display:block; font-size:0.72rem; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.04em; }
+  .tr-arrow { color:var(--line-strong); font-size:0.85rem; }
+  .illustrative { font-size:0.8rem; color:var(--brass-soft); background:var(--brass-bg); border-radius:8px; padding:0.55rem 0.8rem; margin:0 0 1.2rem; }
+  .rollout { margin-top:2.4rem; padding-top:2rem; border-top:1px solid var(--line-strong); }
+  .ro-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem; }
+  @media (max-width:800px) { .ro-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px) { .ro-grid { grid-template-columns:1fr; } }
+  .ro-card { background:var(--card); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:8px; padding:0.8rem 0.9rem; }
+  .ro-when { font-weight:700; font-size:0.85rem; color:var(--ink); margin-bottom:0.35rem; }
+  .ro-v { font-size:0.82rem; color:var(--ink-soft); line-height:1.5; }
+  .ro-next { margin-top:0.9rem; font-size:0.84rem; color:var(--ink-soft); line-height:1.5; }
+  .gov-extra { grid-column:1 / -1; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1.1rem; }
+  @media (max-width:900px) { .gov-extra { grid-template-columns:1fr; } }
+
+  .proposal-pill { display:inline-block; font-family:"IBM Plex Sans",sans-serif; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--card); background:var(--brass-soft); border-radius:10px; padding:0.1rem 0.5rem; margin-right:0.4rem; vertical-align:middle; }
+  .name-tip { position:relative; cursor:help; border-bottom:2px dotted var(--teal); outline:none; }
+  .name-tip .tip {
+    position:absolute; left:0; top:calc(100% + 10px); z-index:90; width:min(320px, 80vw);
+    background:#111111; color:#ffffff; border:1px solid #111111; font-family:"IBM Plex Sans",sans-serif; font-size:0.8rem; font-weight:400;
+    line-height:1.5; letter-spacing:0; text-transform:none; padding:0.7rem 0.85rem; border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.2); opacity:0; visibility:hidden; transform:translateY(-4px);
+    transition:opacity .15s, transform .15s, visibility .15s;
+  }
+  .name-tip .tip b { color:#ffffff; }
+  .name-tip .tip::before { content:''; position:absolute; left:18px; top:-6px; border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:6px solid #111111; }
+  .name-tip:hover .tip, .name-tip:focus .tip, .name-tip.open .tip { opacity:1; visibility:visible; transform:translateY(0); }
+
+  .name-tip .tip::after { content:''; position:absolute; left:0; right:0; top:-12px; height:12px; }
+  .name-tip .tip a { color:#9FE3B5; text-decoration:underline; }
+  .tip-src { display:block; margin-top:0.5rem; padding-top:0.45rem; border-top:1px solid #333333; font-size:0.74rem; color:#CCCCCC; }
+  .arc-tip { font-weight:700; }
+  .helix-tip { font-weight:700; }
+  .helix-tip .tip { left:auto; right:0; }
+  .helix-tip .tip::before { left:auto; right:18px; }
+  @media (max-width:700px) { .helix-tip .tip { left:0; right:auto; } .helix-tip .tip::before { left:18px; right:auto; } }
+  .wrap { overflow-x: clip; }
+
+  /* ---------- Tabs ---------- */
+  .tabs { display:flex; gap:0.3rem; flex-wrap:wrap; border-bottom:1px solid var(--line-strong); margin:1.4rem 0 1.6rem; scroll-margin-top:110px; }
+  .tab { background:none; border:none; border-bottom:3px solid transparent; padding:0.6rem 0.9rem; font-family:inherit; font-size:0.9rem; font-weight:600; color:var(--ink-soft); cursor:pointer; margin-bottom:-1px; }
+  .tab:hover { color:var(--ink); }
+  .tab.active { color:var(--ink); border-bottom-color:var(--teal); }
+  .tab:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+  h2.pane-title { font-weight:500; margin:0 0 1rem; }
+  h3.oc-k { margin:0 0 0.4rem; }
+  body:not(.tab-walkthrough) .role-sidebar { display:none; }
+  @media (min-width:860px) { body:not(.tab-walkthrough) .page-shell { justify-content:center; } }
+
+  /* ---------- Overview ---------- */
+  .hero-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:0.7rem; margin:0.4rem 0 0.3rem; }
+  @media (max-width:560px) { .hero-stats { grid-template-columns:1fr; } }
+  .hs { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:0.8rem 1rem; }
+  .hs b { display:block; font-family:"Fraunces",Georgia,serif; font-weight:500; font-size:1.6rem; color:var(--teal-soft); line-height:1.1; }
+  .hs span { font-size:0.84rem; color:var(--ink-soft); }
+  .hs-note { font-size:0.78rem; color:var(--ink-faint); margin-bottom:1.8rem; }
+  .cta { display:block; margin:1.6rem 0 0.4rem; background:var(--ink); color:#fff; border:none; border-radius:30px; padding:0.8rem 1.3rem; font-family:inherit; font-size:0.92rem; font-weight:600; cursor:pointer; }
+  .cta:hover { opacity:0.9; }
+
+  /* ---------- One meaning per color ---------- */
+  .jb-label, .section-n, .step-btn .n { color:var(--ink-faint); }
+  .proposal-pill { background:var(--ink); }
+  .outcome-card, .outcome-card.quality { border-left-color:var(--ink-soft); }
+  .dora { background:#E4E4E2; color:var(--ink); }
+  .sm-card.okr { border-top-color:var(--ink-soft); }
+  .sm-card.gate { border-top-color:var(--brass-soft); }
+  .sm-lbl { color:var(--brass-soft); }
+  .ro-card { border-top-color:var(--ink-soft); }
+  .illustrative { background:#E4E4E2; color:var(--ink); }
+  .panel.human h3 .dot { background:var(--ink-soft); }
+  .human-row input[type=range] { accent-color:var(--ink-soft); }
+  .score-chip.mid { color:var(--ink-soft); }
+  .score-ring { background:conic-gradient(var(--brass-soft) calc(var(--pct)*1%), var(--line) 0); }
+  .status-chip.arc { background:#E4E4E2; color:var(--ink); }
+  .status-chip.helix { background:var(--brass-bg); color:var(--brass-soft); }
+  .status-chip.both { background:linear-gradient(90deg,#E4E4E2,var(--brass-bg)); color:var(--ink); }
+
+  /* ---------- Numbers only on stages ---------- */
+  .jb-n, .cf-n { display:none; }
+
+  /* ---------- Collapsed stage = one line + two chips ---------- */
+  .section-heading > div:nth-child(2) { flex:1 1 0; min-width:0; }
+  .stage-section:not(.expanded) .section-phase { display:none; }
+  .stage-section:not(.expanded) .section-summary { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mini-metrics { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.45rem; }
+  .mm { font-size:0.72rem; font-weight:600; color:var(--ink-soft); background:#E4E4E2; border-radius:10px; padding:0.1rem 0.5rem; }
+  .stage-section.expanded .mini-metrics { display:none; }
+  .stage-section { padding:1.4rem 0; }
+  .section-toggle { margin-top:0.6rem; }
+  .section-body .stage-meta { margin:0 0 1.1rem; }
+
+  /* ---------- Demo clarity ---------- */
+  .try-note { font-size:0.74rem; color:var(--ink-faint); margin-top:0.4rem; font-style:italic; }
+  .rubric-hint { font-size:0.76rem; color:var(--ink-faint); margin:-0.2rem 0 0.8rem; }
+  .spark { height:auto; }
+  .spark-meta { font-size:0.76rem; color:var(--ink-soft); margin-top:0.2rem; }
+
+  /* ---------- Summary chart ---------- */
+  .summary-chart { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; margin:0 0 1.4rem; }
+  .sc-lead { margin:0 0 0.8rem; font-size:0.84rem; color:var(--ink-soft); }
+  .sc-row { display:grid; grid-template-columns:minmax(120px, 34%) 1fr 56px; align-items:center; gap:0.7rem; width:100%; background:none; border:none; border-radius:6px; padding:0.3rem 0.3rem; font-family:inherit; text-align:left; cursor:pointer; }
+  .sc-row:hover { background:var(--paper); }
+  .sc-name { font-size:0.8rem; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sc-track { position:relative; height:10px; background:var(--line); border-radius:5px; }
+  .sc-bar { position:absolute; left:0; top:0; bottom:0; background:var(--brass-soft); border-radius:5px; }
+  .sc-mark { position:absolute; top:-3px; width:3px; height:16px; background:var(--ink); border-radius:2px; transform:translateX(-50%); }
+  .sc-gap { font-size:0.74rem; color:var(--ink-soft); text-align:right; }
+  .sc-gap.ok { color:var(--teal-soft); font-weight:600; }
+
+  /* ---------- Mobile: dropdown instead of 15 buttons ---------- */
+  .stage-select-wrap { display:none; }
+  @media (max-width:560px) {
+    .stage-select-wrap { display:block; margin:0 0 1.2rem; font-size:0.8rem; font-weight:600; color:var(--ink-soft); }
+    .stage-select-wrap select { display:block; width:100%; margin-top:0.35rem; padding:0.6rem; font-family:inherit; font-size:0.9rem; border:1px solid var(--line-strong); border-radius:8px; background:var(--card); color:var(--ink); }
+    .stepper { display:none; }
+    .sc-row { grid-template-columns:1fr 48px; }
+    .sc-track { grid-column:1 / -1; grid-row:2; }
+  }
+
+  /* ---------- Compact problem bar after scrolling ---------- */
+  .jb-statement { min-width:0; }
+  body.bar-compact .jb-steps, body.bar-compact .jb-kpis { display:none; }
+  body.bar-compact .jb-problem { flex-wrap:nowrap; margin-bottom:0; }
+  body.bar-compact .jb-statement { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stage-section { scroll-margin-top:110px; }
+  @media (min-width:860px) { .role-sidebar { top:100px; max-height:calc(100vh - 120px); } }
+
+  /* ---------- Tooltip triggers: visible cue + ORBIT tooltip outside the h1 ---------- */
+  .name-tip::after, .orbit-trigger::after { content:"\24D8"; font-size:0.55em; vertical-align:super; margin-left:0.15em; color:var(--ink-faint); font-weight:400; }
+  .title-wrap { position:relative; }
+  .orbit-trigger { cursor:help; border-bottom:2px dotted var(--teal); outline:none; }
+  .orbit-trigger:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+  .orbit-tip { position:absolute; left:0; top:calc(100% - 0.4rem); z-index:90; width:min(340px, 85vw); background:#111111; color:#ffffff; font-size:0.82rem; line-height:1.5; padding:0.7rem 0.85rem; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.2); opacity:0; visibility:hidden; transition:opacity .15s, visibility .15s; }
+  .orbit-tip b { color:#ffffff; }
+  .orbit-tip::after { content:''; position:absolute; left:0; right:0; top:-14px; height:14px; }
+  .title-wrap.tip-open .orbit-tip, .title-wrap:has(.orbit-trigger:hover) .orbit-tip, .title-wrap:has(.orbit-trigger:focus) .orbit-tip, .orbit-tip:hover { opacity:1; visibility:visible; }
+
+  footer .sources { margin-top:0.4rem; font-size:0.78rem; color:var(--ink-faint); }
+  footer .sources a { color:var(--ink-soft); }
+
+  /* ---------- Executive dashboard ---------- */
+  .linkish { background:none; border:none; padding:0; font:inherit; color:var(--teal-soft); font-weight:600; cursor:pointer; text-decoration:underline; }
+  .db-lead { color:var(--ink-soft); font-size:0.92rem; margin:0 0 0.8rem; max-width:70ch; }
+  .db-sim { font-size:0.82rem; background:#E4E4E2; color:var(--ink); border-radius:8px; padding:0.55rem 0.8rem; margin-bottom:1rem; }
+  .db-controls { display:flex; align-items:center; gap:0.9rem; flex-wrap:wrap; margin-bottom:0.6rem; }
+  .db-play { background:var(--ink); color:#fff; border:none; border-radius:20px; padding:0.5rem 1rem; font-family:inherit; font-size:0.85rem; font-weight:600; cursor:pointer; }
+  .db-controls input[type=range] { flex:1 1 220px; accent-color:var(--ink); }
+  .db-month-label { font-family:"Fraunces",Georgia,serif; font-size:1.1rem; min-width:9ch; }
+  .db-timeline { display:grid; grid-template-columns:repeat(13,1fr); gap:3px; margin-bottom:0.9rem; }
+  .db-tick { background:var(--line); border:none; border-radius:4px; height:26px; font-family:inherit; font-size:0.72rem; color:var(--ink-soft); cursor:pointer; position:relative; }
+  .db-tick.past { background:#D2D2CF; color:var(--ink); }
+  .db-tick.now { background:var(--ink); color:#fff; }
+  .db-tick.ms::after { content:''; position:absolute; top:-4px; right:-2px; width:8px; height:8px; border-radius:50%; background:var(--teal); border:2px solid var(--paper); }
+  @media (max-width:560px) { .db-tick span { font-size:0.62rem; } }
+  .db-summary { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .db-pill { display:inline-block; font-size:0.74rem; font-weight:700; border-radius:10px; padding:0.15rem 0.6rem; }
+  .db-pill.on { background:var(--teal-bg); color:var(--teal-soft); }
+  .db-pill.risk { background:var(--brass-bg); color:var(--brass-soft); }
+  .db-pill.off { background:var(--coral-bg); color:var(--coral); }
+  .db-group { margin-bottom:1.4rem; }
+  .db-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:0.7rem; }
+  .db-tile { background:var(--card); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:10px; padding:0.8rem 0.9rem; }
+  .db-tile.risk { border-top-color:var(--brass-soft); }
+  .db-tile.off { border-top-color:var(--coral); }
+  .db-name { font-size:0.8rem; font-weight:600; color:var(--ink-soft); min-height:2.3em; }
+  .db-val { font-family:"Fraunces",Georgia,serif; font-size:1.7rem; color:var(--ink); line-height:1.15; margin-top:0.2rem; }
+  .db-target { font-size:0.74rem; color:var(--ink-faint); margin-bottom:0.3rem; }
+  .db-spark { width:100%; height:auto; display:block; }
+  .dot-on { fill:var(--teal); } .dot-risk { fill:var(--brass-soft); } .dot-off { fill:var(--coral); }
+  .db-foot { display:flex; justify-content:space-between; align-items:center; gap:0.4rem; margin-top:0.35rem; flex-wrap:wrap; }
+  .db-src { font-size:0.72rem; color:var(--ink-faint); }
+  .db-bottom { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media (max-width:800px) { .db-bottom { grid-template-columns:1fr; } }
+  .db-note { font-size:0.84rem; color:var(--ink-soft); line-height:1.5; padding:0.45rem 0.6rem; border-left:3px solid var(--line-strong); margin-bottom:0.45rem; }
+  .db-note.ms { border-left-color:var(--teal); }
+  .db-note.risk { border-left-color:var(--brass-soft); }
+  .db-note.off { border-left-color:var(--coral); }
+  .db-trust { font-size:0.84rem; color:var(--ink); font-weight:600; margin:0.7rem 0 0; }
+  :root { color-scheme: light; }
+  html, body { background:var(--paper); color:var(--ink); }
+
+  /* ---------- Theme switch (preview only) ---------- */
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; flex-wrap:wrap; }
+  .theme-toggle { display:flex; align-items:center; gap:0.3rem; font-size:0.74rem; color:var(--ink-faint); }
+  .theme-toggle button { background:var(--card); border:1px solid var(--line-strong); border-radius:14px; padding:0.2rem 0.65rem; font-family:inherit; font-size:0.74rem; color:var(--ink-soft); cursor:pointer; }
+  .theme-toggle button.on { background:#002D72; border-color:#002D72; color:#fff; }
+
+  /* ---------- Citi-accented: navy headings, cerulean for anything clickable ---------- */
+  body.citi { --paper:#F1EFEA; --line:#E2DED6; --line-strong:#CFCAC0; --ink:#333333; --citi-navy:#002D72; --citi-cer:#056DAE; --citi-cer-bg:#E6F0F8; }
+  body.citi h1.title, body.citi h2.pane-title, body.citi .section-title, body.citi .subtitle, body.citi .helix { color:var(--citi-navy); }
+  body.citi .orbit-trigger, body.citi .name-tip { border-bottom-color:var(--citi-cer); }
+  body.citi .tab.active { color:var(--citi-navy); border-bottom-color:var(--citi-cer); }
+  body.citi .tab:focus-visible, body.citi .orbit-trigger:focus-visible { outline-color:var(--citi-cer); }
+  body.citi .scroll-progress-fill { background:var(--citi-cer); }
+  body.citi .cta, body.citi .db-play, body.citi button.submit { background:var(--citi-cer); color:#fff; }
+  body.citi .linkish, body.citi footer .sources a { color:var(--citi-cer); }
+  body.citi .loop-return { border-color:var(--citi-cer); }
+  body.citi .lr-head { border-bottom-color:var(--citi-cer); }
+  body.citi .lr-label { border-color:var(--citi-cer); color:var(--citi-cer); }
+  body.citi .cf-node:hover, body.citi .tr-chip:hover { border-color:var(--citi-cer); }
+  body.citi .section-toggle:hover, body.citi .toggle-output:hover { border-color:var(--citi-cer); color:var(--citi-cer); }
+  body.citi .hs b { color:var(--citi-navy); }
+  body.citi .step-btn.active, body.citi .step-btn.in-view { border-color:var(--citi-cer); background:var(--citi-cer-bg); }
+  body.citi .db-tick.now { background:var(--citi-navy); }
+  body.citi .db-controls input[type=range] { accent-color:var(--citi-cer); }
+
+  /* ---------- Full Citi: navy structure throughout ---------- */
+  body.citi-full .journey-bar { background:var(--citi-navy); border-bottom-color:var(--citi-navy); }
+  body.citi-full .jb-statement, body.citi-full .jb-step .jb-l { color:#ffffff; }
+  body.citi-full .jb-label, body.citi-full .jb-kpi-label { color:#A9C8E8; }
+  body.citi-full .jb-arrow { color:#6F8FB8; }
+  body.citi-full .journey-bar .value-chip { background:rgba(255,255,255,0.14); color:#ffffff; }
+  body.citi-full .tabs { background:var(--citi-navy); border-radius:10px 10px 0 0; border-bottom:none; padding:0 0.4rem; }
+  body.citi-full .tab { color:#C9D8EA; }
+  body.citi-full .tab:hover, body.citi-full .tab.active { color:#ffffff; }
+  body.citi-full .tab.active { border-bottom-color:#ffffff; }
+  body.citi-full .cf-node { border-top:3px solid var(--citi-cer); }
+  body.citi-full .dual-card.builder, body.citi-full .sm-card:not(.okr):not(.gate) { border-top-color:var(--citi-cer); }
+  body.citi-full .dual-rule { background:var(--citi-cer-bg); }
+  body.citi-full .hs { border-top:3px solid var(--citi-navy); }
+  body.citi-full .section-n, body.citi-full .step-btn .n { color:var(--citi-cer); }
+  body.citi-full .outcome-card { border-left-color:var(--citi-navy); }
+  body.citi-full .ro-card { border-top-color:var(--citi-navy); }
+  body.citi-full .role-sidebar { border-top:3px solid var(--citi-navy); }
+  body.citi-full .proposal-pill { background:var(--citi-cer); }
+  body.citi-full .db-sim, body.citi-full .illustrative { background:var(--citi-cer-bg); color:var(--citi-navy); }
+  body.citi-full .mm, body.citi-full .dora { background:var(--citi-cer-bg); color:var(--citi-navy); }
+  body.citi-full footer { border-top:3px solid var(--citi-navy); padding-top:1rem; }
+  html { background:#F1EFEA; }
+
+  /* ---------- Modern accent: electric indigo replaces the muted gold page-wide ---------- */
+  body.citi { --brass:#5B3DF5; --brass-soft:#5B3DF5; --brass-bg:#EEEBFF; --amber:#B47A12; --amber-bg:#FEF3DC; }
+  body.citi .eyebrow { font-family:"IBM Plex Sans",sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#5B3DF5; }
+  body.citi .proposal-pill { background:#5B3DF5; }
+  /* "At risk" is a status, not the accent: keep it amber */
+  body.citi .db-pill.risk { background:var(--amber-bg); color:var(--amber); }
+  body.citi .db-tile.risk { border-top-color:var(--amber); }
+  body.citi .dot-risk { fill:var(--amber); }
+  body.citi .db-note.risk { border-left-color:var(--amber); }
+
+  /* ---------- Problem bar: journey steps and Citi KPIs as distinct boxes on the navy band ---------- */
+  body.citi-full .jb-step { background:#056DAE; border-radius:8px; padding:0.3rem 0.65rem; }
+  body.citi-full .jb-step .jb-l { color:#ffffff; font-weight:600; }
+  body.citi-full .jb-arrow { color:#8FB4DC; }
+  body.citi-full .journey-bar .value-chip { background:#7FE3CF; color:#002D72; font-weight:700; border-radius:8px; padding:0.25rem 0.6rem; }
+  body.citi-full .jb-kpi-label { color:#7FE3CF; }
+
+  /* ---------- Top bar numbers that pop ---------- */
+  body.citi-full .jb-n { display:inline-flex; width:24px; height:24px; background:#7FE3CF; color:#002D72; border:none; font-family:"IBM Plex Sans",sans-serif; font-size:0.85rem; font-weight:800; }
+  body.citi-full .journey-bar .value-chip { display:inline-flex; align-items:baseline; gap:0.3rem; }
+  body.citi-full .journey-bar .value-chip b { font-size:1.1rem; font-weight:800; line-height:1; }
+
+  /* ---------- Confidentiality marking on every screen ---------- */
+  .watermark { position:fixed; inset:0; pointer-events:none; z-index:70;
+    background-image:url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='460' height='250'><text x='20' y='150' transform='rotate(-22 230 125)' font-family='Arial, sans-serif' font-size='15' fill='%23002D72' fill-opacity='0.08'>© 2026 Sonia Malik · ORBIT prototype</text></svg>"); }
+  .conf-strip { position:fixed; left:0; right:0; bottom:0; z-index:75; background:rgba(0,45,114,0.94); color:#ffffff; font-size:0.72rem; line-height:1.35; text-align:center; padding:0.35rem 0.8rem calc(0.35rem + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom:2.6rem; }
+  .back-to-top { bottom:calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+  @media (max-width:560px) { .conf-strip { font-size:0.66rem; } .back-to-top { bottom:calc(3.4rem + env(safe-area-inset-bottom, 0px)); } }
+
+  /* ---------- Preview: locked panels ---------- */
+  .locked { background:var(--card); border:1px solid var(--line); border-top:3px solid #002D72; border-radius:12px; padding:1.6rem 1.5rem; max-width:720px; }
+  .lk-icon { font-size:1.6rem; margin-bottom:0.3rem; }
+  .lk-lead { color:var(--ink-soft); font-size:0.95rem; margin:0 0 1rem; }
+  .lk-k { font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); margin-bottom:0.4rem; }
+  .lk-list { margin:0 0 1.2rem; padding-left:1.1rem; color:var(--ink); font-size:0.9rem; line-height:1.6; }
+  .lk-cta { font-weight:600; color:var(--ink); margin:0; }
+  .lk-cta a { color:#056DAE; }
+
+  /* ---------- Citi priorities (Overview) ---------- */
+  .priorities { margin:2rem 0 2.2rem; }
+  .pr-lead { color:var(--ink-soft); font-size:0.93rem; margin:0 0 1rem; max-width:72ch; }
+  .pr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:0.75rem; }
+  .pr-card { background:var(--card); border:1px solid var(--line); border-top:3px solid #002D72; border-radius:10px; padding:0.9rem 1rem; display:flex; flex-direction:column; gap:0.45rem; }
+  .pr-k { font-weight:700; color:#002D72; font-size:0.92rem; }
+  .pr-v { font-size:0.86rem; color:var(--ink); line-height:1.5; }
+  .pr-proof { margin-top:auto; font-size:0.8rem; color:var(--ink-soft); background:#EEEBFF; border-radius:8px; padding:0.45rem 0.6rem; line-height:1.45; }
+  .pr-proof b { color:#5B3DF5; }
+  .pr-scale { margin-top:0.9rem; font-size:0.88rem; color:var(--ink); line-height:1.5; }
+  /* ---------- Business lens (Dashboard) ---------- */
+  .lens { margin:0 0 1.1rem; }
+  .lens-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; }
+  @media (max-width:800px) { .lens-grid { grid-template-columns:1fr 1fr; } }
+  .ln { background:#002D72; color:#ffffff; border-radius:10px; padding:0.75rem 0.85rem; }
+  .ln-k { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#A9C8E8; }
+  .ln-v { font-family:"Fraunces",Georgia,serif; font-size:1.35rem; line-height:1.2; margin:0.2rem 0; color:#7FE3CF; }
+  .ln-s { font-size:0.78rem; color:#E1EAF5; line-height:1.4; }
+  /* ---------- Scale-out (Dashboard) ---------- */
+  .scale { margin:0.4rem 0 1.4rem; }
+  .scale-lead { margin:0 0 0.7rem; font-size:0.84rem; color:var(--ink-soft); }
+  .scale-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; }
+  @media (max-width:800px) { .scale-grid { grid-template-columns:1fr 1fr; } }
+  .bz { border-radius:10px; padding:0.7rem 0.8rem; border:1px solid var(--line); background:var(--card); transition:background .3s, border-color .3s; }
+  .bz-b { font-weight:700; font-size:0.86rem; color:var(--ink); }
+  .bz-j { font-size:0.78rem; color:var(--ink-soft); margin:0.15rem 0 0.35rem; }
+  .bz-s { font-size:0.72rem; font-weight:700; }
+  .bz.live { background:var(--teal-bg); border-color:var(--teal); } .bz.live .bz-s { color:var(--teal-soft); }
+  .bz.late { background:var(--amber-bg); border-color:var(--amber); } .bz.late .bz-s { color:var(--amber); }
+  .bz.next { border-style:dashed; } .bz.next .bz-s { color:#056DAE; }
+  .bz.y2 { background:#EAE7E1; } .bz.y2 .bz-s { color:var(--ink-faint); }
+  .invite { display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; background:#EEEBFF; border:1px solid #D6CFFF; border-radius:10px; padding:0.7rem 0.9rem; margin:-0.6rem 0 1.4rem; font-size:0.88rem; color:#333333; }
+  .invite b { color:#5B3DF5; }
+  .invite a { margin-left:auto; background:#5B3DF5; color:#ffffff; text-decoration:none; font-weight:700; border-radius:20px; padding:0.4rem 0.9rem; white-space:nowrap; }
+  @media (max-width:560px) { .invite a { margin-left:0; } }
+
+  .invite-btn { margin-left:auto; background:#5B3DF5; color:#ffffff; border:none; font-family:inherit; font-size:0.86rem; font-weight:700; border-radius:20px; padding:0.45rem 1rem; cursor:pointer; white-space:nowrap; }
+  .invite-btn:hover { opacity:0.9; }
+  @media (max-width:560px) { .invite-btn { margin-left:0; } }
+  /* ---------- Contact card ---------- */
+  .contact-modal { position:fixed; inset:0; z-index:120; display:flex; align-items:center; justify-content:center; padding:1rem; }
+  .contact-modal[hidden] { display:none; }
+  .cm-backdrop { position:absolute; inset:0; background:rgba(0,20,50,0.55); }
+  .cm-card { position:relative; background:#ffffff; color:#333333; border-radius:14px; border-top:4px solid #5B3DF5; width:min(520px, 100%); max-height:calc(100vh - 2rem); overflow:auto; padding:1.4rem 1.4rem 1.2rem; box-shadow:0 20px 50px rgba(0,0,0,0.3); }
+  .cm-close { position:absolute; top:0.6rem; right:0.7rem; background:none; border:none; font-size:1.6rem; line-height:1; color:#62656B; cursor:pointer; }
+  .cm-eyebrow { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#5B3DF5; }
+  .cm-title { font-size:1.35rem; font-weight:500; color:#002D72; margin:0.2rem 0 0.6rem; }
+  .cm-lead { font-size:0.9rem; line-height:1.55; margin:0 0 0.8rem; }
+  .cm-route { font-size:0.86rem; line-height:1.5; background:#E6F0F8; border-radius:8px; padding:0.6rem 0.75rem; margin-bottom:0.9rem; }
+  .cm-route b { color:#002D72; }
+  .cm-row { display:grid; grid-template-columns:72px 1fr auto; align-items:center; gap:0.6rem; padding:0.55rem 0; border-bottom:1px solid #E2DED6; }
+  .cm-row:last-child { border-bottom:none; }
+  .cm-k { font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#62656B; }
+  .cm-v { font-size:0.9rem; font-weight:600; color:#002D72; word-break:break-all; user-select:all; }
+  .cm-copy { background:#056DAE; color:#ffffff; border:none; border-radius:14px; padding:0.3rem 0.8rem; font-family:inherit; font-size:0.78rem; font-weight:700; cursor:pointer; }
+  .cm-status { font-size:0.8rem; color:#148A78; min-height:1.2em; margin-top:0.5rem; }
+
+  .invite.profile { align-items:flex-start; gap:0.9rem; padding:0.9rem 1rem; }
+  .pf-avatar { flex:0 0 44px; height:44px; border-radius:50%; background:#002D72; color:#ffffff; font-weight:800; font-size:0.95rem; display:flex; align-items:center; justify-content:center; }
+  .pf-body { flex:1 1 360px; min-width:0; }
+  .pf-line { font-size:0.84rem; color:#002D72; }
+  .pf-line b { color:#5B3DF5; font-size:0.95rem; }
+  .pf-pitch { font-size:0.92rem; color:#333333; line-height:1.5; margin:0.3rem 0 0.55rem; }
+  .pf-stats { display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .pf-stats span { background:#ffffff; border:1px solid #D6CFFF; border-radius:8px; padding:0.25rem 0.55rem; font-size:0.78rem; color:#333333; }
+  .pf-stats b { color:#5B3DF5; }
+  .invite.profile .invite-btn { align-self:center; }
+  @media (max-width:560px) { .pf-avatar { display:none; } .invite.profile .invite-btn { align-self:flex-start; } }
+
+  /* ---------- Floating profile bar ---------- */
+  .pf-float { position:fixed; left:50%; bottom:calc(2.8rem + env(safe-area-inset-bottom, 0px)); z-index:80;
+    width:min(680px, calc(100vw - 1.5rem)); background:#ffffff; border:1px solid #D6CFFF; border-top:3px solid #5B3DF5; border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,20,50,0.22); padding:0.6rem 0.8rem;
+    opacity:0; transform:translate(-50%, 16px); pointer-events:none; transition:opacity .2s, transform .2s; }
+  .pf-float.show { opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+  .pf-row { display:flex; align-items:center; gap:0.6rem; }
+  .pf-float .pf-avatar { flex:0 0 36px; height:36px; font-size:0.82rem; }
+  .pf-min { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; line-height:1.3; }
+  .pf-min b { color:#002D72; font-size:0.9rem; }
+  .pf-min span { font-size:0.8rem; color:#5A5D63; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pf-more-btn { background:none; border:1px solid #D6CFFF; color:#5B3DF5; border-radius:14px; padding:0.3rem 0.7rem; font-family:inherit; font-size:0.78rem; font-weight:700; cursor:pointer; }
+  .pf-float .invite-btn { margin-left:0; padding:0.4rem 0.9rem; font-size:0.82rem; }
+  .pf-x { background:none; border:none; color:#62656B; font-size:1.3rem; line-height:1; cursor:pointer; padding:0 0.2rem; }
+  .pf-more { border-top:1px solid #EEEBFF; margin-top:0.6rem; padding-top:0.6rem; }
+  .pf-more .pf-pitch { font-size:0.88rem; }
+  .pf-mini { position:fixed; left:1rem; bottom:calc(2.9rem + env(safe-area-inset-bottom, 0px)); z-index:80; width:44px; height:44px; border-radius:50%;
+    background:#002D72; color:#ffffff; border:3px solid #5B3DF5; font-family:inherit; font-weight:800; font-size:0.85rem; cursor:pointer; box-shadow:0 6px 18px rgba(0,20,50,0.25); }
+  .pf-mini[hidden] { display:none; }
+  body.pf-on .back-to-top { bottom:calc(7.2rem + env(safe-area-inset-bottom, 0px)); }
+  @media (max-width:560px) {
+    .pf-float { padding:0.5rem 0.6rem; }
+    .pf-float .pf-avatar { display:none; }
+    .pf-more-btn { display:none; }
+    .pf-min span { font-size:0.74rem; }
+    body.pf-on .back-to-top { bottom:calc(7.8rem + env(safe-area-inset-bottom, 0px)); }
+  }
+
+  /* ---------- Name with profile preview ---------- */
+  .me-wrap { position:relative; display:inline-block; }
+  .me-trigger { background:none; border:none; padding:0; font:inherit; color:inherit; letter-spacing:inherit; text-transform:inherit; cursor:pointer; border-bottom:2px dotted #5B3DF5; }
+  .me-chev { font-size:0.7em; margin-left:0.25em; }
+  .me-trigger:focus-visible { outline:2px solid #5B3DF5; outline-offset:2px; }
+  .me-pop { position:absolute; left:0; top:calc(100% + 10px); z-index:95; width:min(440px, 90vw);
+    background:#ffffff; border:1px solid #D6CFFF; border-top:4px solid #5B3DF5; border-radius:12px; box-shadow:0 16px 40px rgba(0,20,50,0.22);
+    padding:1rem 1.05rem; text-transform:none; letter-spacing:0; font-family:"IBM Plex Sans",sans-serif; font-weight:400; color:#333333; text-align:left;
+    opacity:0; visibility:hidden; transform:translateY(-4px); transition:opacity .15s, transform .15s, visibility .15s; }
+  .me-pop::before { content:''; position:absolute; left:0; right:0; top:-14px; height:14px; }
+  .me-wrap:hover .me-pop, .me-wrap.open .me-pop, .me-wrap:focus-within .me-pop { opacity:1; visibility:visible; transform:translateY(0); }
+  .me-head { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.5rem; }
+  .me-head .pf-avatar { flex:0 0 42px; height:42px; }
+  .me-name { font-size:1.05rem; font-weight:700; color:#002D72; }
+  .me-title { font-size:0.8rem; color:#5A5D63; }
+  .me-pop .pf-pitch { font-size:0.86rem; line-height:1.55; margin:0.3rem 0 0.6rem; }
+  .pf-pitch b { color:#002D72; }
+  .me-pop .pf-stats span { font-size:0.76rem; }
+  .me-cta { display:inline-block; margin:0.8rem 0 0; }
+
+  /* ---------- Economics and operating model ---------- */
+  .econ { margin:0 0 2.2rem; }
+  .econ-lead { color:var(--ink-soft); font-size:0.93rem; margin:0 0 1rem; }
+  .econ-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+  @media (max-width:860px) { .econ-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px) { .econ-grid { grid-template-columns:1fr; } }
+  .ec { background:var(--card); border:1px solid var(--line); border-left:4px solid #002D72; border-radius:10px; padding:0.85rem 0.95rem; }
+  .ec-k { font-weight:700; color:#002D72; font-size:0.9rem; margin-bottom:0.3rem; }
+  .ec-v { font-size:0.85rem; color:var(--ink); line-height:1.5; }
+  .ninety-k { margin-top:1.3rem !important; }
+  .ninety { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; }
+  @media (max-width:700px) { .ninety { grid-template-columns:1fr; } }
+  .nd { background:#002D72; color:#ffffff; border-radius:10px; padding:0.8rem 0.9rem; }
+  .nd-w { font-weight:700; font-size:0.85rem; color:#7FE3CF; margin-bottom:0.3rem; }
+  .nd-v { font-size:0.83rem; line-height:1.5; color:#E1EAF5; }
+
+  /* ---------- DevEx: developer's day ---------- */
+  .devday { margin:1.6rem 0 1.4rem; }
+  .dd-lead { color:var(--ink-soft); font-size:0.92rem; margin:0 0 0.8rem; }
+  .dd-table { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .dd-head, .dd-row { display:grid; grid-template-columns:120px 1fr 1fr; gap:0; }
+  .dd-head span { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.6rem 0.8rem; background:#002D72; color:#ffffff; }
+  .dd-head span:nth-child(3) { background:#0F7A5A; }
+  .dd-row span { padding:0.7rem 0.8rem; font-size:0.85rem; line-height:1.5; border-top:1px solid var(--line); }
+  .dd-m { font-weight:700; color:#002D72; }
+  .dd-b { color:var(--ink-soft); background:#FAF8F4; }
+  .dd-a { color:var(--ink); background:#EEF8F3; }
+  .dd-out { margin-top:0.7rem; font-weight:700; color:#0F7A5A; font-size:0.92rem; }
+  @media (max-width:640px) {
+    .dd-head { display:none; }
+    .dd-row { grid-template-columns:1fr; border-top:1px solid var(--line-strong); }
+    .dd-b::before { content:'Without an AI-first PDLC: '; font-weight:700; }
+    .dd-a::before { content:'With ORBIT: '; font-weight:700; color:#0F7A5A; }
+  }
+  .paved { margin:0 0 2rem; }
+  .pv-grid, .ff-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.6rem; }
+  .pv, .ff { background:var(--card); border:1px solid var(--line); border-top:3px solid #056DAE; border-radius:10px; padding:0.75rem 0.85rem; display:flex; flex-direction:column; gap:0.3rem; }
+  .pv b, .ff b { color:#002D72; font-size:0.88rem; }
+  .pv span, .ff span { font-size:0.82rem; color:var(--ink); line-height:1.5; }
+  .fastfb { margin:1.4rem 0; }
+  .feels { margin-top:0.4rem; font-size:0.84rem; color:#0F7A5A; }
+  .feels span { display:inline-block; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; background:#EEF8F3; color:#0F7A5A; border-radius:8px; padding:0.05rem 0.45rem; margin-right:0.35rem; }
+  .dispute-btn { margin-top:0.2rem; background:none; border:1px dashed #5B3DF5; color:#5B3DF5; border-radius:14px; padding:0.3rem 0.8rem; font-family:inherit; font-size:0.78rem; font-weight:700; cursor:pointer; }
+  .dispute-note { font-size:0.78rem; color:var(--ink-soft); margin-top:0.35rem; font-style:italic; }
+  .lens-grid { grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)) !important; }
+
+  .builds-on { background:#E6F0F8; border-left:4px solid #056DAE; border-radius:8px; padding:0.75rem 0.9rem; margin:0.2rem 0 1.2rem; font-size:0.9rem; line-height:1.55; color:#333333; }
+  .builds-on b { color:#002D72; }
+
+  .thesis { font-size:clamp(1.15rem, 2.6vw, 1.4rem); line-height:1.4; color:#002D72; margin:0.4rem 0 0.6rem; max-width:48ch; }
+  .moved-loop { margin-bottom:2rem; }
+
+  .ec-list, .nd-list { margin:0; padding-left:1.05rem; }
+  .ec-list li { font-size:0.86rem; color:var(--ink); line-height:1.4; margin:0.2rem 0; }
+  .nd-list li { font-size:0.84rem; color:#E1EAF5; line-height:1.4; margin:0.2rem 0; }
+  .ec-list li::marker { color:#056DAE; }
+  .nd-list li::marker { color:#7FE3CF; }
+
+  /* ---------- Reference architecture ---------- */
+  .arch { margin:0 0 1.8rem; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; }
+  .arch-lead { font-size:0.88rem; color:var(--ink-soft); margin:0 0 0.8rem; line-height:1.5; }
+  .arch-stack { display:flex; flex-direction:column; gap:0.4rem; }
+  .arch-row { display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:0.7rem; padding:0.55rem 0.7rem; border-radius:8px; background:var(--paper); border-left:4px solid #5B3DF5; }
+  .arch-row.top { border-left-color:#0F7A5A; background:#EEF8F3; }
+  .arch-row.arc { border-left-color:#8C8F94; }
+  .ar-n { font-size:1.05rem; color:#002D72; text-align:center; }
+  .ar-main b { color:#002D72; font-size:0.9rem; }
+  .ar-main em { font-style:normal; color:var(--ink-soft); font-size:0.8rem; margin-left:0.4rem; }
+  .ar-main span { display:block; font-size:0.8rem; color:#5B3DF5; margin-top:0.1rem; }
+  .arch-row.top .ar-main span { color:#0F7A5A; }
+  .arch-loop { margin-top:0.7rem; font-size:0.86rem; font-weight:600; color:#0F7A5A; }
+  .arch-note { margin-top:0.3rem; font-size:0.8rem; color:var(--ink-faint); }
+  @media (max-width:560px) { .ar-main em { display:block; margin-left:0; } .arch-row { grid-template-columns:26px 1fr auto; gap:0.5rem; } }
+
+  /* ---------- Revision: layout and new blocks ---------- */
+  .journey-bar { position:static !important; }
+  body { padding-bottom:6.5rem; }
+  .pf-float { left:1rem; right:auto; width:min(420px, calc(100vw - 2rem)); transform:translateY(16px); bottom:calc(1rem + env(safe-area-inset-bottom, 0px)); padding:0.5rem 0.65rem; }
+  .pf-float.show { transform:translateY(0); }
+  .pf-float .pf-avatar { flex:0 0 30px; height:30px; font-size:0.72rem; }
+  .pf-mini { bottom:calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  .back-to-top { bottom:calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  body.pf-on .back-to-top { bottom:calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  @media (max-width:560px) { body.pf-on .back-to-top { bottom:calc(5.2rem + env(safe-area-inset-bottom, 0px)); } }
+  .working-name { font-size:0.85rem; color:var(--ink-soft); margin:-0.4rem 0 0.6rem; }
+  .working-name .orbit-trigger { font-weight:700; }
+  .value-chip small, .hs small, .ln-s small { display:block; font-size:0.7rem; font-weight:400; opacity:0.85; }
+  .hero-stats { grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)) !important; }
+  .hs b { font-size:1.35rem; }
+  .ln-v { font-size:1.25rem; }
+  .wt-targets { margin-top:1.6rem; }
+  .phase-detail { margin:1rem 0 0.4rem; background:var(--card); border:1px solid var(--line); border-left:4px solid #5B3DF5; border-radius:10px; padding:0.8rem 1rem; }
+  .pd-t { font-weight:700; color:#002D72; margin-bottom:0.35rem; }
+  .pd-list { margin:0; padding-left:1.1rem; font-size:0.86rem; line-height:1.5; color:var(--ink); }
+  .cf-node.active { border-color:#5B3DF5; box-shadow:0 0 0 2px #EEEBFF; }
+  .lock-line { margin:1.2rem 0 0; font-size:0.9rem; color:var(--ink-soft); }
+  .quarters { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:0.6rem; }
+  .qt { background:var(--card); border:1px solid var(--line); border-top:3px solid #056DAE; border-radius:10px; padding:0.75rem 0.85rem; }
+  .qt b { display:block; color:#002D72; font-size:0.88rem; margin-bottom:0.25rem; }
+  .qt span { font-size:0.84rem; line-height:1.45; color:var(--ink); }
+  .rai { margin:0 0 1.8rem; background:#EEF8F3; border-left:4px solid #0F7A5A; border-radius:8px; padding:0.7rem 0.9rem; font-size:0.87rem; line-height:1.5; }
+  .rai b { color:#0F7A5A; }
+  .db-pill.base { background:#E4E4E2; color:var(--ink); }
+  .db-tile.base { border-top-color:#B8B8B5; }
+  .dot-base { fill:#8C8F94; }
+  .sp-ax { font-size:8px; fill:var(--ink-faint); font-family:"IBM Plex Sans",sans-serif; }
+  .db-axis { font-size:0.66rem; color:var(--ink-faint); margin-top:0.1rem; }
+  .pf-float { max-height:min(60vh, 440px); overflow:auto; }
+  .pf-mini { width:40px; height:40px; font-size:0.8rem; }
+  .pf-mini { width:auto; height:auto; display:inline-flex; align-items:center; gap:0.5rem; border-radius:24px; padding:0.3rem 0.95rem 0.3rem 0.3rem;
+    background:#ffffff; color:#002D72; border:2px solid #5B3DF5; font-size:0.88rem; font-weight:700; }
+  .pf-mini:hover { background:#EEEBFF; }
+  .pm-av { width:30px; height:30px; border-radius:50%; background:#002D72; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800; }
+  @keyframes pmPulse { 0% { box-shadow:0 0 0 0 rgba(91,61,245,0.45); } 100% { box-shadow:0 0 0 14px rgba(91,61,245,0); } }
+  .pf-mini { animation:pmPulse 1.4s ease-out 4s 2; }
+  @media (prefers-reduced-motion: reduce) { .pf-mini { animation:none; } }
+  .pf-mini { padding-right:1.05rem; }
+  .me-pop .pf-stats span { background:#ffffff; }
+  /* ---------- Vertical edge tab for the profile button ---------- */
+  .pf-mini { left:0; right:auto; top:50%; bottom:auto; transform:translateY(-50%);
+    writing-mode:vertical-rl; display:inline-flex; align-items:center; gap:0.55rem;
+    padding:0.45rem 0.4rem 0.8rem; border-radius:0 12px 12px 0; border-left:none;
+    font-size:0.82rem; box-shadow:2px 4px 14px rgba(0,20,50,0.18); }
+  .pm-av { writing-mode:horizontal-tb; flex:0 0 auto; }
+  .pf-float { left:2.8rem; width:min(420px, calc(100vw - 3.6rem)); }
+  @media (max-width:560px) {
+    .pf-mini { font-size:0.74rem; padding:0.35rem 0.3rem 0.65rem; }
+    .pm-av { width:24px; height:24px; font-size:0.62rem; }
+    .wrap { padding-left:2.4rem; }
+  }
+  .target-foot { font-size:0.76rem; color:var(--ink-faint); font-style:italic; margin:0.45rem 0 0.2rem; }
+  .lens .target-foot { color:var(--ink-soft); }
+  /* ---------- Profile card: dock (wide) or sheet (narrow); never overlaps content ---------- */
+  .pf-backdrop { display:none; position:fixed; inset:0; z-index:79; background:rgba(0,20,50,0.45); }
+  @media (min-width:900px) {
+    .pf-float { top:0; bottom:0; left:0; width:340px; height:100vh; max-height:none; border-radius:0; border:none;
+      border-right:1px solid #D6CFFF; box-shadow:4px 0 18px rgba(0,20,50,0.12); padding:1.2rem 1rem; overflow:auto;
+      transform:translateX(-100%); transition:opacity .2s, transform .2s; }
+    .pf-float.show { transform:translateX(0); }
+    body { transition:padding-left .2s; }
+    body.pf-on { padding-left:340px; }
+  }
+  @media (max-width:899px) {
+    .pf-float { left:50%; top:50%; bottom:auto; width:min(420px, calc(100vw - 2rem)); max-height:80vh; overflow:auto;
+      border-radius:14px; transform:translate(-50%, -46%); }
+    .pf-float.show { transform:translate(-50%, -50%); }
+    body.pf-on .pf-backdrop { display:block; }
+  }
+  /* ---------- Sub-heading on one or two lines ---------- */
+  .subtitle { max-width:none; font-size:clamp(1rem, 2.2vw, 1.18rem); }
+  /* ---------- Tab bar: pills, badge, pinned ---------- */
+  .tabs { position:sticky; top:3px; z-index:45; }
+  body.citi-full .tabs { display:flex; flex-wrap:wrap; gap:0.3rem; padding:0.4rem; border-radius:12px; box-shadow:0 4px 14px rgba(0,20,50,0.15); }
+  body.citi-full .tab { border-bottom:none; border-radius:20px; padding:0.45rem 1rem; margin:0; color:#C9D8EA; transition:background .15s, color .15s; }
+  body.citi-full .tab:hover { background:rgba(255,255,255,0.12); color:#ffffff; }
+  body.citi-full .tab.active { background:#ffffff; color:#002D72; }
+  .tab-badge { display:inline-block; margin-left:0.35rem; font-size:0.66rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase;
+    background:#7FE3CF; color:#002D72; border-radius:10px; padding:0.1rem 0.45rem; vertical-align:middle; }
+  @media (max-width:560px) { body.citi-full .tab { padding:0.4rem 0.75rem; font-size:0.84rem; } }
+  /* ---------- Tabs read as a guided sequence ---------- */
+  .tab-n { display:inline-flex; align-items:center; justify-content:center; width:1.35em; height:1.35em; margin-right:0.4rem;
+    border-radius:50%; font-size:0.72rem; font-weight:800; background:rgba(255,255,255,0.18); color:#ffffff; }
+  body.citi-full .tab.active .tab-n { background:#002D72; color:#ffffff; }
+  .next-tab { display:inline-flex; align-items:center; gap:0.4rem; margin:2rem 0 0.5rem; background:#002D72; color:#ffffff; border:none;
+    border-radius:24px; padding:0.65rem 1.25rem; font-family:inherit; font-size:0.9rem; font-weight:700; cursor:pointer; }
+  .next-tab:hover { background:#056DAE; }
+  .next-tab.back { background:#ffffff; color:#002D72; border:2px solid #002D72; }
+  @keyframes tabGlow { 0%,100% { background:transparent; } 50% { background:rgba(127,227,207,0.35); color:#ffffff; } }
+  body.citi-full .tab:not(.active) { animation:tabGlow 1s ease-in-out 1; }
+  body.citi-full .tab:nth-child(2):not(.active) { animation-delay:2.2s; }
+  body.citi-full .tab:nth-child(3):not(.active) { animation-delay:2.6s; }
+  body.citi-full .tab:nth-child(4):not(.active) { animation-delay:3.0s; }
+  body.citi-full .tab:nth-child(5):not(.active) { animation-delay:3.4s; }
+  body.citi-full .tab:nth-child(1):not(.active) { animation-delay:1.8s; }
+  @media (prefers-reduced-motion: reduce) { body.citi-full .tab { animation:none !important; } }
+  /* ---------- Larger tab labels ---------- */
+  body.citi-full .tab { font-size:1.02rem; padding:0.55rem 1.1rem; }
+  .tab-n { font-size:0.78rem; }
+  @media (max-width:560px) { body.citi-full .tab { font-size:0.92rem; padding:0.45rem 0.8rem; } }
+  .pf-citi { display:block; margin-top:0.7rem; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+<script data-goatcounter="https://soniamalik78.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body class="citi citi-full">
+<div class="watermark" aria-hidden="true"></div>
+
+<div class="scroll-progress" id="scroll-progress"><div class="scroll-progress-fill" id="scroll-progress-fill"></div></div>
+<div class="journey-bar">
+  <div class="journey-bar-inner">
+    <div class="jb-problem">
+      <span class="jb-label">Pilot journey &middot; card disputes</span>
+      <span class="jb-statement">&ldquo;I don&rsquo;t recognize this charge.&rdquo; At many banks, that moment still means a form, a phone call, and days of uncertainty. The pilot turns it into a two-minute, in-app dispute with a same-day decision (automated credit in a later release) &mdash; and proves the approach on a journey customers feel.</span>
+    </div>
+    <div class="jb-steps">
+      <div class="jb-step"><span class="jb-n serif">1</span><span class="jb-l">Flags the charge in-app</span></div>
+      <span class="jb-arrow">&rarr;</span>
+      <div class="jb-step"><span class="jb-n serif">2</span><span class="jb-l">Instant fraud check</span></div>
+      <span class="jb-arrow">&rarr;</span>
+      <div class="jb-step"><span class="jb-n serif">3</span><span class="jb-l">One smart question, not a form</span></div>
+      <span class="jb-arrow">&rarr;</span>
+      <div class="jb-step"><span class="jb-n serif">4</span><span class="jb-l">Resolved or routed to an expert</span></div>
+      <span class="jb-arrow">&rarr;</span>
+      <div class="jb-step"><span class="jb-n serif">5</span><span class="jb-l">Same-day decision</span></div>
+      <span class="jb-arrow">&rarr;</span>
+      <div class="jb-step"><span class="jb-n serif">6</span><span class="jb-l">A clear reason, not a form letter</span></div>
+    </div>
+    <div class="jb-kpis">
+      <span class="jb-kpi-label">Pilot targets &middot; to validate in the first 90 days after baselining</span>
+      <span class="value-chip"><b>Same-day</b> decision on low-risk disputes <small>(automated credit in a later release)</small></span>
+      <span class="value-chip"><b>+5&ndash;10%</b> dispute CSAT</span>
+      <span class="value-chip"><b>&minus;10&ndash;20%</b> cost per dispute</span>
+      <span class="value-chip"><b>&minus;25&ndash;35%</b> lead time for changes</span>
+      <span class="value-chip"><b>75&ndash;85%</b> of code changes get automated feedback within 15 minutes</span>
+    </div>
+  </div>
+</div>
+<div class="page-shell">
+<div class="wrap">
+  <div class="eyebrow-row">
+  <div class="eyebrow serif"><span class="proposal-pill">Executive preview</span> <span class="me-wrap"><button class="me-trigger" id="me-trigger" aria-expanded="false" aria-controls="me-pop">Sonia Malik<span class="me-chev" aria-hidden="true">&#9662;</span></button><div class="me-pop" id="me-pop" role="dialog" aria-label="Profile: Sonia Malik"><div class="me-head"><div class="pf-avatar" aria-hidden="true">SM</div><div><div class="me-name">Sonia Malik</div><div class="me-title">VP, Global Head of Quality Engineering &amp; AI PDLC, S&amp;P Global</div></div></div><div class="pf-pitch">I&rsquo;ve led engineering transformation on both sides of the industry: <b>regulated financial services</b> at S&amp;P Global and Prudential, and <b>technology-first product companies</b> at Audible (an Amazon company) and DoubleVerify. I also build teams from zero &mdash; new quality engineering groups stood up from scratch at Prudential and TheMarkets, and a 4 &rarr; 41 organization at Audible, scaled in 3 months. At S&amp;P: AI-first PDLC framework designed to serve ~1,200 engineers, stood up in 6 months.<span class="pf-citi">For Citi, adoption begins with engineering pull: ORBIT scales through developer preference, shaped by chapter standards and backed by a year-one scorecard Tech and Finance both trust.</span></div><div class="pf-stats"><span><b>AI-first PDLC framework</b> designed to serve ~1,200 engineers, stood up in 6 months (S&amp;P)</span><span><b>Regulated + tech-first:</b> S&amp;P Global, Prudential, Audible (Amazon)</span><span><b>0 &rarr; 1:</b> new QE groups built from scratch; 4 &rarr; 41 org scaled in 3 months (Audible)</span><span><b>350+</b> engineers &middot; <b>$70M+</b> budget led</span><span><b>$50M+</b> revenue via Audible&rsquo;s NFR Center of Excellence</span><span><b>30% reduction</b> in time-to-market within 9 months (Audible)</span><span><b>15% increase</b> in CSAT &middot; <b>25% reduction</b> in critical customer defects (Audible)</span></div><button class="invite-btn me-cta" onclick="openContact()">Let&rsquo;s talk &rarr;</button></div></span> · AI-first PDLC working prototype</div>
+  </div>
+  <div class="title-wrap">
+  <h1 class="title">How I&rsquo;d make AI the default way Citi builds software, running on Arc</h1>
+  <div class="working-name">Working name: <span class="helix orbit-trigger" tabindex="0" role="button" aria-describedby="orbit-tip">ORBIT</span></div>
+  <div class="orbit-tip" id="orbit-tip" role="tooltip"><b>Why &ldquo;ORBIT&rdquo;?</b> It&rsquo;s a working name for this proposal. Every release travels through production and comes back around, as customer learnings, to discovery &mdash; a closed loop, like an orbit.</div>
+  </div>
+  <div class="tagline"><span>Built to run on <span class="name-tip arc-tip" tabindex="0" role="button" aria-describedby="arc-tip" onclick="this.classList.toggle('open')">Arc<span class="tip" id="arc-tip" role="tooltip"><b>About Arc &mdash; from public information</b><br>In April 2026, Citi launched Arc, an internal platform for building and scaling AI agents across the firm. CTO David Griffiths described it as a centralized &ldquo;operating system&rdquo; for agents. Arc is rolling out to developers first, brings agents and use cases into one secure system with access to top models, and lets employees monitor agents and stop tasks if needed. Citi says every agent will be monitored, auditable, and governed.<span class="tip-src">ORBIT&rsquo;s assumptions about Arc are based only on this public reporting. Sources: <a href="https://axios.com/2026/04/30/exclusive-citi-moves-into-agentic-ai" target="_blank" rel="noopener noreferrer">Axios</a> &middot; <a href="https://www.ciodive.com/news/citi-launches-arc-scale-ai-agents/819113/" target="_blank" rel="noopener noreferrer">CIO Dive</a></span></span></span>&rsquo;s agent infrastructure</span><span class="tl-sep">|</span><span>Governed by ORBIT quality gates</span><span class="tl-sep">|</span><span>Organized as a <span class="name-tip helix-tip" tabindex="0" role="button" aria-describedby="helix-tip" onclick="this.classList.toggle('open')">Helix<span class="tip" id="helix-tip" role="tooltip"><b>The Helix operating model</b><br>A McKinsey organization design that splits accountability into two lines: value creation (tribes and squads) and capability (chapters that own standards, tools, and talent).<br><br><b>How ORBIT uses it:</b> squads own the <b>Builder agents</b> and what they deliver for the customer journey. Capability chapters &mdash; QE, Dev, SRE, Architecture &mdash; own the <b>Judge agents&rsquo; rubrics</b> and the quality gates, so one engineering standard applies across every squad.<span class="tip-src">Source: <a href="https://www.mckinsey.com/capabilities/people-and-organization/our-insights/the-helix-organization" target="_blank" rel="noopener noreferrer">McKinsey, &ldquo;The helix organization&rdquo;</a></span></span></span>: squads build, chapters set the standard</span></div>
+  <div class="subtitle serif">A Dual-Agent AI-PDLC on Arc: Accelerated Delivery to Market and Enhanced Developer Experience, Governed by Artifact-Aware Quality Gates.</div>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Proposal sections">
+    <button class="tab active" role="tab" id="tabbtn-overview" data-tab="overview" aria-controls="tab-overview" aria-selected="true"><span class="tab-n" aria-hidden="true">1</span>Overview</button>
+    <button class="tab" role="tab" id="tabbtn-dashboard" data-tab="dashboard" aria-controls="tab-dashboard" aria-selected="false" tabindex="-1"><span class="tab-n" aria-hidden="true">2</span>Exec dashboard</button>
+    <button class="tab" role="tab" id="tabbtn-walkthrough" data-tab="walkthrough" aria-controls="tab-walkthrough" aria-selected="false" tabindex="-1"><span class="tab-n" aria-hidden="true">3</span>Walkthrough</button>
+    <button class="tab" role="tab" id="tabbtn-governance" data-tab="governance" aria-controls="tab-governance" aria-selected="false" tabindex="-1"><span class="tab-n" aria-hidden="true">4</span>Architecture &amp; DevEx</button>
+    <button class="tab" role="tab" id="tabbtn-rollout" data-tab="rollout" aria-controls="tab-rollout" aria-selected="false" tabindex="-1"><span class="tab-n" aria-hidden="true">5</span>Rollout</button>
+  </div>
+
+
+  <section class="tab-panel" id="tab-overview" role="tabpanel" aria-labelledby="tabbtn-overview">
+  <p class="thesis serif">The outcome: developers get their time back, and every release carries its own evidence.</p>
+  <p class="intro">Builder agents take the toil; judge agents give fast, explained feedback in the IDE and pull request; and what production teaches flows back into the next cycle. Clients get value sooner, and Risk gets evidence by default.</p>
+  <div class="builds-on"><b>Building on what Citi already runs:</b> generative AI coding tools for 30,000 developers (Banking Dive, Jan 2025); agentic AI with Devin rolling out to its 40,000 developers (American Banker, Jul 2025); an estimated 1.5 million automated code reviews facilitated by its AI tools (American Banker, Jun 2026); and Arc as its agent platform. ORBIT turns those investments into one governed, measurable way of building software &mdash; the tools stay, and the operating model around them changes.</div>
+  <div class="hero-stats" aria-label="Pilot targets">
+    <div class="hs"><b>Same-day</b><span>decision on low-risk disputes <small>(automated credit in a later release)</small></span></div>
+    <div class="hs"><b>+5&ndash;10%</b><span>dispute CSAT</span></div>
+    <div class="hs"><b>&minus;10&ndash;20%</b><span>cost per dispute</span></div>
+    <div class="hs"><b>&minus;25&ndash;35%</b><span>lead time for changes</span></div>
+    <div class="hs"><b>75&ndash;85%</b><span>of code changes get automated feedback within 15 minutes</span></div>
+  </div>
+  <div class="target-foot">Pilot target metrics (card-dispute journey) &mdash; baseline to be validated during Days 1&ndash;30.</div>
+  <div class="hs-note">Pilot targets &middot; to validate in the first 90 days after baselining &mdash; targets, not promises. <button class="linkish" onclick="showTab('dashboard', true)">See the 12-month executive scorecard &rarr;</button></div>
+  <div class="devday">
+    <h2 class="pane-title serif">A developer&rsquo;s day, before and after ORBIT</h2>
+    <p class="dd-lead">Follow a developer on the card-dispute pilot through one change. The left column is a typical enterprise pattern, not a claim about Citi today.</p>
+    <div class="dd-table">
+      <div class="dd-head"><span>Moment</span><span>Without an AI-first PDLC</span><span>With ORBIT</span></div>
+      <div class="dd-row"><span class="dd-m">Starting work</span><span class="dd-b">Reads a vague ticket and books a meeting to ask what &ldquo;done&rdquo; means.</span><span class="dd-a">Picks up a requirement already traced to a customer goal, with BDD acceptance tests attached.</span></div>
+      <div class="dd-row"><span class="dd-m">Writing code</span><span class="dd-b">Security and coverage issues surface days later in a separate scan.</span><span class="dd-a">The developer&rsquo;s coding assistant or Devin agent drafts the change; judge and security feedback appears in the IDE and pull request within minutes, with the reasoning shown &mdash; and the developer can dispute a score in one click.</span></div>
+      <div class="dd-row"><span class="dd-m">Waiting</span><span class="dd-b">Waits days for a full regression cycle before getting a signal.</span><span class="dd-a">Automated regression runs daily; most feedback arrives the same day.</span></div>
+      <div class="dd-row"><span class="dd-m">Handoffs</span><span class="dd-b">Three meetings to translate requirements, NFRs, and test plans between teams.</span><span class="dd-a">One NFR contract and one set of BDD scenarios, shared by Dev, QE, and Product.</span></div>
+      <div class="dd-row"><span class="dd-m">Shipping</span><span class="dd-b">The release waits for a manual sign-off window.</span><span class="dd-a">Gates pass predictably because the same checks already ran in the PR; it ships the same day, with a named approver on high-risk changes.</span></div>
+      <div class="dd-row"><span class="dd-m">After release</span><span class="dd-b">Ships the change and never hears what happened for customers.</span><span class="dd-a">Sees the journey&rsquo;s CSAT and NPS move, and reads what customers said about the change &mdash; shared with the squad, never used to score anyone individually.</span></div>
+    </div>
+    <div class="dd-out">Less waiting, fewer handoffs, more time building &mdash; with the same controls, applied earlier.</div>
+  </div>
+
+  <div class="paved">
+    <h3 class="oc-k">A paved road developers choose</h3>
+    <div class="pv-grid">
+      <div class="pv"><b>Builds on what Citi already runs</b><span>Citi&rsquo;s coding assistants and Devin become the builder layer. No new tools.</span></div>
+      <div class="pv"><b>Golden paths on Arc</b><span>Self-service templates: teams onboard in days, no tickets.</span></div>
+      <div class="pv"><b>Adoption by pull, not mandate</b><span>Teams opt in because it&rsquo;s faster; usage proves it works.</span></div>
+      <div class="pv"><b>Line of sight to customers</b><span>Developers see who they build for, and what changed after release.</span></div>
+    </div>
+  </div>
+
+  <div class="econ">
+    <h2 class="pane-title serif">Economics and operating model</h2>
+    <p class="econ-lead">What it takes, what it returns, and how it scales from one pilot to the firm.</p>
+    <div class="econ-grid">
+      <div class="ec"><div class="ec-k">Investment</div><ul class="ec-list"><li>No new tools, no new platform</li><li>Builders: Citi&rsquo;s coding assistants and Devin</li><li>New spend: judge inference and evaluation</li><li>Team of about 30, mostly redeployed (proposed)</li></ul></div>
+      <div class="ec"><div class="ec-k">Return</div><ul class="ec-list"><li>Higher return on AI tools Citi already pays for</li><li>Freed capacity goes to client-facing change</li><li>Measured by Finance, not the ORBIT team</li></ul></div>
+      <div class="ec"><div class="ec-k">Funding guardrail</div><ul class="ec-list"><li>Run cost stays below capacity released</li><li>Reviewed quarterly with Finance</li><li>Stages that don&rsquo;t pay back are redesigned or retired</li></ul></div>
+      <div class="ec"><div class="ec-k">Working with Arc</div><ul class="ec-list"><li>Arc (assumed from public reporting): core model access, identity, infrastructure safety</li><li>ORBIT: domain-specific PDLC agents, artifact-aware rubrics, and gates designed for CISO and Model Risk approval</li><li>One platform, no duplication</li></ul></div>
+      <div class="ec"><div class="ec-k">Org model</div><ul class="ec-list"><li>Helix: squads build, chapters set the standard</li><li>Squads own the builder agents</li><li>Chapters own the rubrics and gates</li></ul></div>
+      <div class="ec"><div class="ec-k">Year two: firmwide</div><ul class="ec-list"><li>Every new build on ORBIT by default</li><li>Self-service templates and golden paths</li><li>Legacy systems onboard by risk tier</li></ul></div>
+    </div>
+    <h3 class="oc-k ninety-k">My first 90 days as the leader</h3>
+    <div class="ninety">
+      <div class="nd"><div class="nd-w">Days 1&ndash;30 &middot; Listen and baseline</div><ul class="nd-list"><li>Meet business CIOs, Arc, CISO, Model Risk, Finance</li><li>Baseline DORA, cost, and quality</li><li>Launch the card-dispute pilot on Arc</li></ul></div>
+      <div class="nd"><div class="nd-w">Days 31&ndash;60 &middot; Govern and choose</div><ul class="nd-list"><li>Governance forum with Risk and Controls</li><li>Next two journeys chosen, each with a named sponsor (go-live planned for M6 and M9)</li></ul></div>
+      <div class="nd"><div class="nd-w">Days 61&ndash;90 &middot; Prove and commit</div><ul class="nd-list"><li>First release shipped through ORBIT</li><li>First Tech + Finance scorecard</li><li>Year-one plan and funding guardrail published</li></ul></div>
+    </div>
+  </div>
+  <button class="cta" onclick="goToStage('discovery')">See it in action: walk through the card-dispute journey &rarr;</button>
+  
+  <button class="next-tab" onclick="showTab('dashboard', true)">Next: 2 &middot; Exec dashboard &rarr;</button>
+  </section>
+
+  <section class="tab-panel" id="tab-dashboard" role="tabpanel" aria-labelledby="tabbtn-dashboard" hidden>
+  <h2 class="pane-title serif">Executive scorecard: the first 12 months</h2>
+  <p class="db-lead">Tracks ORBIT against the four outcomes this role is measured on in year one. Move the month slider, or press Play to watch the year unfold. &ldquo;On track&rdquo; means on the planned trajectory for that month, not that the year-one target is already met.</p>
+  <div class="db-sim"><b>Simulated trajectory.</b> ORBIT isn&rsquo;t live at Citi yet, so these values are illustrative. Once it is, each tile refreshes automatically from the system named on it.</div>
+
+  <div class="lens">
+    <h3 class="oc-k">Year-one targets &middot; to validate in the first 90 days after baselining</h3>
+    <div class="lens-grid">
+      <div class="ln"><div class="ln-v">Same-day</div><div class="ln-s">decision on low-risk disputes <small>(automated credit in a later release)</small></div></div>
+      <div class="ln"><div class="ln-v">+5&ndash;10%</div><div class="ln-s">dispute CSAT</div></div>
+      <div class="ln"><div class="ln-v">&minus;10&ndash;20%</div><div class="ln-s">cost per dispute</div></div>
+      <div class="ln"><div class="ln-v">&minus;25&ndash;35%</div><div class="ln-s">lead time for changes</div></div>
+      <div class="ln"><div class="ln-v">75&ndash;85%</div><div class="ln-s">of code changes get automated feedback within 15 minutes</div></div>
+    </div>
+    <div class="target-foot">Pilot target metrics (card-dispute journey) &mdash; baseline to be validated during Days 1&ndash;30.</div>
+  </div>
+  <div class="db-controls">
+    <button class="db-play" id="db-play">&#9654; Play year</button>
+    <input type="range" id="db-month" min="0" max="12" step="1" value="6" aria-label="Month of the first year">
+    <div class="db-month-label" id="db-month-label" aria-live="polite"></div>
+  </div>
+  <div class="db-timeline" id="db-timeline"></div>
+  <div class="db-summary" id="db-summary"></div>
+  <div id="db-groups"></div>
+
+  <div class="scale">
+    <h3 class="oc-k">Firmwide scale-out: one pilot, then reusable ORBIT templates</h3>
+    <p class="scale-lead">Businesses light up as the year plays. Candidate journeys are illustrative and would be chosen with each business.</p>
+    <div class="scale-grid" id="scale-grid"></div>
+  </div>
+  <div class="priorities">
+    <h2 class="pane-title serif">Citi&rsquo;s AI priorities, and how I&rsquo;d help deliver them</h2>
+    <p class="pr-lead">Citi&rsquo;s firmwide AI strategy is about measurable business outcomes in every business. ORBIT is how I&rsquo;d make AI the default way Citi builds the software behind those outcomes. The proof points come from my own track record.</p>
+    <div class="pr-grid">
+      <div class="pr-card"><div class="pr-k">Client experience</div><div class="pr-v">Every build starts from a customer journey, and production feedback on CSAT closes the loop.</div><div class="pr-proof"><b>Delivered:</b> +15% CSAT and &minus;25% critical customer defects at Audible.</div></div>
+      <div class="pr-card"><div class="pr-k">Growth and new revenue</div><div class="pr-v">Client-facing change ships sooner: a &minus;25&ndash;35% lead-time target, validated after baselining.</div><div class="pr-proof"><b>Delivered:</b> $50M+ revenue via the NFR Center of Excellence and $10M+ via geo-customization at Audible; ~$100M revenue impact from accessibility, security, and data-metrics frameworks at Prudential.</div></div>
+      <div class="pr-card"><div class="pr-k">Operational efficiency</div><div class="pr-v">Agents take the repetitive work; engineers keep the judgment calls.</div><div class="pr-proof"><b>Delivered:</b> regression cut from 9 to 4 days in 3 months at S&amp;P; &minus;60% manual effort at Audible; ~50% QA cost reduction at Prudential.</div></div>
+      <div class="pr-card"><div class="pr-k">Risk and controls</div><div class="pr-v">Judge agents, hard promotion gates, and named human sign-off on high-risk stages, with audit evidence built in.</div><div class="pr-proof"><b>Delivered:</b> zero-Sev2 major launches in regulated insurance; partnered with CISO, Risk, and Controls on AI-assisted development at S&amp;P.</div></div>
+      <div class="pr-card"><div class="pr-k">Scalable platforms, built with leading AI labs</div><div class="pr-v">Designed to run on Arc, using the coding assistants and Devin agents Citi already runs as its builder layer.</div><div class="pr-proof"><b>Delivered:</b> AI-first PDLC framework designed to serve ~1,200 engineers, stood up in 6 months (S&amp;P). Hands-on with Claude + VS Code and Grok Bot; expanding hands-on with GitHub Copilot and agentic IDEs (e.g., Cursor).</div></div>
+    </div>
+    <div class="pr-scale"><b>Firmwide by design:</b> one pilot in US Consumer Cards, then reusable ORBIT templates for Markets, Services, Banking, Wealth, Risk, Finance, and Functions. The scale-out plan is above.</div>
+  </div>
+
+  <div class="db-bottom">
+    <div class="panel"><h3 class="oc-k">What changed this month</h3><div id="db-notes"></div></div>
+    <div class="panel"><h3 class="oc-k">How this goes live at Citi</h3>
+      <ul class="gx">
+        <li><b>DORA metrics:</b> CI/CD pipeline and deployment events &middot; daily</li>
+        <li><b>Developer feedback and PR cycle time:</b> IDE, pull-request, and source-control events &middot; continuous</li>
+        <li><b>Adoption and pilot status:</b> ORBIT usage telemetry and the agent registry on Arc &middot; daily</li>
+        <li><b>Time on toil:</b> DevEx pulse plus workflow telemetry &middot; monthly</li>
+        <li><b>Dispute CSAT:</b> post-dispute customer survey &middot; weekly</li>
+        <li><b>Cost per dispute:</b> Finance cost allocation &middot; monthly</li>
+        <li><b>Developer satisfaction and line of sight:</b> DevEx pulse survey, including &ldquo;I can see how my work affects Citi&rsquo;s customers&rdquo; &middot; quarterly</li>
+      </ul>
+      <p class="db-trust">Tech and Finance read the same numbers from the same sources &mdash; that&rsquo;s what makes the scorecard trusted.</p>
+    </div>
+  </div>
+  
+  <button class="next-tab" onclick="showTab('walkthrough', true)">Next: 3 &middot; Walkthrough &rarr;</button>
+  </section>
+
+  <section class="tab-panel" id="tab-walkthrough" role="tabpanel" aria-labelledby="tabbtn-walkthrough" hidden>
+  <div class="concept moved-loop">
+    <h2 class="pane-title serif">The AI-first PDLC, end to end</h2>
+    <div class="concept-flow">
+      <div class="cf-node" onclick="goToStage('discovery')" title="Click to jump to the Customer Value &amp; Discovery agent and see how the personas, triggers, goals, and KPIs behind this journey actually get generated.">
+        <div class="cf-n serif">1</div>
+        <div class="cf-t">Customer value &amp; discovery</div>
+        <div class="cf-d">The new shift-left phase. Personas, triggers, goals, business KPIs.</div>
+        <div class="cf-tap">Show summary ›</div>
+      </div>
+      <div class="cf-arrow">&rarr;</div>
+      <div class="cf-node" onclick="goToStage('requirements')" title="Click to jump into the standard PDLC, starting at the Requirements agent \u2014 the first of eight agent+judge stages through a governed CI/CD promotion.">
+        <div class="cf-n serif">2</div>
+        <div class="cf-t">Standard PDLC</div>
+        <div class="cf-d">Requirements through a governed CI/CD promotion. Unchanged in structure.</div>
+        <div class="cf-tap">Show summary ›</div>
+      </div>
+      <div class="cf-arrow">&rarr;</div>
+      <div class="cf-node" onclick="goToStage('production')" title="Click to jump to the Production Deployment agent \u2014 canary rollout, live monitoring, and the feature flag held back for release 2.">
+        <div class="cf-n serif">3</div>
+        <div class="cf-t">Production</div>
+        <div class="cf-d">Deployed and live, serving real customers and real transactions.</div>
+        <div class="cf-tap">Show summary ›</div>
+      </div>
+      <div class="cf-arrow">&rarr;</div>
+      <div class="cf-node" onclick="goToStage('learning')" title="Click to jump to the Continuous Learning agent \u2014 incidents, customer feedback sessions, adoption rate, and CSAT/NPS synthesized into one report.">
+        <div class="cf-n serif">4</div>
+        <div class="cf-t">Continuous learning</div>
+        <div class="cf-d">Incidents, customer feedback, adoption rate, CSAT/NPS &mdash; synthesized.</div>
+        <div class="cf-tap">Show summary ›</div>
+      </div>
+    </div>
+    <div class="loop-return" onclick="goToStage('refinement')" title="See how the Customer Journey Refinement agent turns production learnings into the next cycle's discovery artifact">
+      <span class="lr-head"></span>
+      <span class="lr-label">&#8635; Production learnings loop back into customer value &amp; discovery</span>
+    </div>
+    <div class="cf-loop">Incidents, feedback, adoption, and CSAT/NPS become next cycle&rsquo;s personas, triggers, and goals &mdash; the shift from incident response to incident prevention.</div>
+    <div class="phase-detail" id="phase-detail" hidden aria-live="polite"></div>
+    <div class="wt-targets"><h3 class="oc-k">Pilot targets &middot; to validate in the first 90 days after baselining</h3>
+  <div class="hero-stats">
+    <div class="hs"><b>Same-day</b><span>decision on low-risk disputes <small>(automated credit in a later release)</small></span></div>
+    <div class="hs"><b>+5&ndash;10%</b><span>dispute CSAT</span></div>
+    <div class="hs"><b>&minus;10&ndash;20%</b><span>cost per dispute</span></div>
+    <div class="hs"><b>&minus;25&ndash;35%</b><span>lead time for changes</span></div>
+    <div class="hs"><b>75&ndash;85%</b><span>of code changes get automated feedback within 15 minutes</span></div>
+  </div>
+  <div class="target-foot">Pilot target metrics (card-dispute journey) &mdash; baseline to be validated during Days 1&ndash;30.</div></div>
+  </div>
+
+
+  <p class="lock-line">The full 15-stage walkthrough is shared in conversation. <button class="linkish" onclick="openContact()">Set up the full walkthrough &rarr;</button></p>
+  
+  <button class="next-tab" onclick="showTab('governance', true)">Next: 4 &middot; Architecture &amp; DevEx &rarr;</button>
+  </section>
+
+  <section class="tab-panel" id="tab-governance" role="tabpanel" aria-labelledby="tabbtn-governance" hidden>
+  <h2 class="pane-title serif">Developer experience first, with governance built in</h2>
+  <div class="arch">
+    <h3 class="oc-k">ORBIT reference architecture &middot; seven layers</h3>
+    <p class="arch-lead">Coding agents build, judge agents review, and quality gates hold every promotion until the standard is met.</p>
+    <div class="arch-stack">
+      <div class="arch-row top"><div class="ar-n serif">&#9733;</div><div class="ar-main"><b>The customer journey</b><em>where every change starts</em></div><div class="ar-own"></div></div>
+      <div class="arch-row"><div class="ar-n serif">1</div><div class="ar-main"><b>Developer surfaces</b><em>IDE, pull request, portal</em></div><div class="ar-own"><span class="status-chip helix">ORBIT</span></div></div>
+      <div class="arch-row"><div class="ar-n serif">2</div><div class="ar-main"><b>Orchestration</b><em>runs PDLC stages in order</em></div><div class="ar-own"><span class="status-chip helix">ORBIT</span></div></div>
+      <div class="arch-row"><div class="ar-n serif">3</div><div class="ar-main"><b>Builder + judge agents</b><em>coding agents build, judge agents review</em></div><div class="ar-own"><span class="status-chip helix">ORBIT</span></div></div>
+      <div class="arch-row"><div class="ar-n serif">4</div><div class="ar-main"><b>Tools and context</b><em>MCP connections, codebase index</em></div><div class="ar-own"><span class="status-chip helix">ORBIT</span></div></div>
+      <div class="arch-row arc"><div class="ar-n serif">5</div><div class="ar-main"><b>Model gateway</b><em>one governed route to models &middot; assumed from public reporting</em></div><div class="ar-own"><span class="status-chip arc">Arc (assumed)</span></div></div>
+      <div class="arch-row"><div class="ar-n serif">6</div><div class="ar-main"><b>Evaluation and observability</b><em>evals, traces, scorecards</em></div><div class="ar-own"><span class="status-chip helix">ORBIT</span></div></div>
+      <div class="arch-row arc"><div class="ar-n serif">7</div><div class="ar-main"><b>Governance and agent registry</b><em>identity, permissions, audit &middot; assumed from public reporting</em></div><div class="ar-own"><span class="status-chip arc">Arc (assumed)</span></div></div>
+    </div>
+    <div class="arch-loop">&#8635; Production learnings flow back into customer discovery.</div>
+    <div class="arch-note">Layers 5 and 7 are assumed to be provided by Arc, based on public reporting about the platform. ORBIT builds on top &mdash; one platform, no duplication.</div>
+  </div>
+  <div class="rai"><b>Responsible AI, built in:</b> human gates on high-risk stages, independent second-line validation of judge agents, every override logged with a named owner, and customer metrics never used to score individual developers.</div>
+
+    <div class="devex">
+      <div class="devex-head">
+        <h3 class="oc-k">What it changes for each role</h3>
+      </div>
+      <div class="devex-grid">
+        <div class="dx-card" style="--role-color:#0E8A96"><div class="dx-role">Product Owner</div><div class="dx-v">Starts from a scored customer-discovery artifact, not a blank page. Requirements, MVP scope, and features arrive traceable to a customer goal and a Citi KPI.</div></div>
+        <div class="dx-card" style="--role-color:#2A7DE1"><div class="dx-role">Developer / Architect</div><div class="dx-v">Builds against one NFR contract and gets SAST, secrets, and coverage feedback before the PR, not after. No translation meetings, no late security surprises.</div></div>
+        <div class="dx-card" style="--role-color:#E23F6B"><div class="dx-role">QE Engineer</div><div class="dx-v">Receives executable BDD and generated test suites on day one. Time shifts from writing scripts to judging risk and edge cases.</div></div>
+        <div class="dx-card" style="--role-color:#DB8A1C"><div class="dx-role">SRE / DevOps</div><div class="dx-v">Promotion gates, canary rollouts, and rollback triggers are automated and auditable. Every override is logged with an owner, so on-call starts with evidence.</div></div>
+      </div>
+      <div class="devex-measures"><b>How DevEx is measured:</b> changes with automated feedback within 15 minutes of submission &middot; PR cycle time &middot; time on toil &middot; quarterly developer satisfaction &mdash; the DevEx framework&rsquo;s feedback loops, cognitive load, and flow.</div>
+      <div class="fastfb">
+        <h3 class="oc-k">Guardrails developers experience as help</h3>
+        <div class="ff-grid">
+          <div class="ff"><b>In the IDE and pull request</b><span>Judges and deterministic checks comment inline while the developer is working &mdash; minutes, not days later in a separate scan.</span></div>
+          <div class="ff"><b>Explained, not just scored</b><span>Every finding shows the rubric line and reasoning behind it, so the fix is obvious.</span></div>
+          <div class="ff"><b>Disputable in one click</b><span>Developers can dispute a judge score. Disputes go to the owning chapter and feed judge calibration.</span></div>
+          <div class="ff"><b>Same checks, earlier</b><span>By the time code reaches a promotion gate, it has already passed the same checks in the PR, so gates are predictable.</span></div>
+        </div>
+      </div>
+      <div class="dual">
+        <h3 class="oc-k">ORBIT dual-agent stage execution architecture</h3>
+        <p class="dual-lead">To enforce speed and strict governance simultaneously, every agent stage in the pipeline runs on a two-agent model.</p>
+        <div class="dual-grid">
+          <div class="dual-card builder">
+            <div class="dual-n serif">1</div>
+            <div class="dual-t">The Builder Agent <span>Execution &amp; speed</span></div>
+            <div class="dual-v">Generates stage-specific artifacts &mdash; requirements, BDD stories, code, test scripts, or canary configs &mdash; using specialized LLM prompts, context memory, and tool integration.<div class="dual-extra"><b>Builds on existing tools:</b> Citi&rsquo;s existing AI coding assistants and Devin agents fill the builder role &mdash; all running on Arc, all judged the same way.</div></div>
+          </div>
+          <div class="dual-arrow">&rarr;</div>
+          <div class="dual-card judge">
+            <div class="dual-n serif">2</div>
+            <div class="dual-t">The Judge Agent <span>Governance &amp; quality gate</span></div>
+            <div class="dual-v">Evaluates the Builder Agent&rsquo;s output against stage-specific, artifact-aware rubrics &mdash; requirement stability, BDD verifiability, or NFR coverage.<div class="dual-extra"><b>Deterministic first:</b> SAST/DAST, tests, and schema checks run as tools; the LLM judge covers only what tools can&rsquo;t assess.</div></div>
+          </div>
+        </div>
+        <div class="dual-rule">An artifact promotes to the next stage, or triggers the CI/CD gate, only when the Judge Agent issues an explicit pass certification &mdash; and, on high-risk stages, a named human reviewer signs off.</div>
+        <div class="integrity">
+          <h3 class="oc-k">Keeping the judges honest</h3>
+          <ul>
+            <li><b>Different model family</b> from the builder, to avoid self-preference bias.</li>
+            <li><b>Golden-set calibration:</b> judge&ndash;human agreement measured with Cohen&rsquo;s kappa, not a point delta.</li>
+            <li><b>Judges are versioned and evaluated</b> like any model, with independent validation by the second line.</li>
+            <li><b>Phase containment feedback:</b> an escaped defect tightens the rubric of the stage that missed it.</li>
+          </ul>
+        </div>
+        <div class="autonomy-scale">
+          <h3 class="oc-k">Autonomy levels, set by risk tier</h3>
+          <div class="as-row">
+            <div class="as-cell"><b>L1 &middot; Suggest</b><span>Humans decide and author</span></div>
+            <div class="as-cell"><b>L2 &middot; Drafts, human approves</b><span>Named approver before it moves on</span></div>
+            <div class="as-cell"><b>L3 &middot; Acts, human reviews</b><span>Reviewed asynchronously, reversible</span></div>
+            <div class="as-cell"><b>L4 &middot; Autonomous check</b><span>Deterministic gates only, overrides logged</span></div>
+          </div>
+          <div class="as-note">No stage auto-deploys to production: the release agent is L2 on high-risk tiers.</div>
+        </div>
+        <div class="dual-note">The two CI/CD promotion gates are hard, automated checks rather than a builder&ndash;judge pair. Every agent runs on Arc, which governs the agents themselves; ORBIT governs what they produce.</div>
+      </div>
+
+    </div>
+
+  <div class="closing">
+    <b>Why artifact-aware quality gates matter at enterprise scale:</b> a single generic quality rubric produces weak signal and papered-over risk. &ldquo;Quality&rdquo; means something very different for a BDD scenario (is the Then clause deterministic and automated?) than for an NFR architecture spec (can Dev, QE, and Performance teams execute against it without manual translation meetings?). By embedding artifact-aware judge agents and hard CI/CD promotion gates at every stage, this framework gives Risk, Controls, and Engineering executives an Artifact Quality Score and a DORA-aligned Velocity Scorecard they can trust &mdash; delivering software faster.
+  </div>
+  
+  <button class="next-tab" onclick="showTab('rollout', true)">Next: 5 &middot; Rollout &rarr;</button>
+  </section>
+
+  <section class="tab-panel" id="tab-rollout" role="tabpanel" aria-labelledby="tabbtn-rollout" hidden>
+  <h2 class="pane-title serif">Pilot to firmwide in 12 months</h2>
+  <div class="quarters">
+    <div class="qt"><b>Q1 &middot; M1&ndash;M3</b><span>Baselines captured; card-dispute pilot on Arc; first release and first Tech + Finance scorecard.</span></div>
+    <div class="qt"><b>Q2 &middot; M4&ndash;M6</b><span>Judge calibration; second journey (Wealth) onboarding; release agent at L2 with human approval.</span></div>
+    <div class="qt"><b>Q3 &middot; M7&ndash;M9</b><span>Wealth live end to end; third journey (Services) onboarding; independent model-risk validation of judges.</span></div>
+    <div class="qt"><b>Q4 &middot; M10&ndash;M12</b><span>Services live; ORBIT templates published; scale decision for year two.</span></div>
+  </div>
+  <p class="lock-line">The detailed phase-by-phase plan is shared in conversation. <button class="linkish" onclick="openContact()">Set up the full walkthrough &rarr;</button></p>
+  
+  <button class="next-tab back" onclick="showTab('overview', true)">Back to start: 1 &middot; Overview &#8634;</button>
+  </section>
+
+  <footer>&copy; 2026 Sonia Malik. All rights reserved. Prepared as a work sample for Citi &mdash; Head of Group Wide AI First Engineering.<div class="sources">This page uses cookie-free, anonymous visit counting (GoatCounter). Public sources: Arc &mdash; <a href="https://axios.com/2026/04/30/exclusive-citi-moves-into-agentic-ai" target="_blank" rel="noopener noreferrer">Axios</a>, <a href="https://www.ciodive.com/news/citi-launches-arc-scale-ai-agents/819113/" target="_blank" rel="noopener noreferrer">CIO Dive</a>; Helix operating model &mdash; <a href="https://www.mckinsey.com/capabilities/people-and-organization/our-insights/the-helix-organization" target="_blank" rel="noopener noreferrer">McKinsey</a>; Citi developer AI tools &mdash; <a href="https://www.bankingdive.com/news/citi-transformation-generative-ai-coding-assistant-fraser-mason/737715/" target="_blank" rel="noopener noreferrer">Banking Dive</a>, <a href="https://www.americanbanker.com/news/citi-is-rolling-out-agentic-ai-to-its-40-000-developers" target="_blank" rel="noopener noreferrer">American Banker</a>, <a href="https://www.americanbanker.com/news/citis-cio-in-37-on-the-most-innovative-people-in-finance-ranking" target="_blank" rel="noopener noreferrer">American Banker</a>.</div></footer>
+</div>
+</div>
+
+<button class="back-to-top" id="back-to-top" title="Jump back to the stage navigator">
+  <span class="arrow">&uarr;</span> Back to top
+</button>
+
+
+
+<div class="pf-backdrop" aria-hidden="true"></div>
+<aside class="pf-float" id="pf-float" aria-label="About Sonia Malik">
+  <div class="pf-row">
+    <div class="pf-avatar" aria-hidden="true">SM</div>
+    <div class="pf-min"><b>Sonia Malik</b><span>AI-first PDLC framework designed to serve ~1,200 engineers, stood up in 6 months (S&amp;P)</span></div>
+    <button class="pf-more-btn" id="pf-more-btn" aria-expanded="false" aria-controls="pf-more">More</button>
+    <button class="invite-btn" onclick="openContact()">Let&rsquo;s talk</button>
+    <button class="pf-x" id="pf-x" aria-label="Minimize">&minus;</button>
+  </div>
+  <div class="pf-more" id="pf-more" hidden>
+    <div class="pf-line">VP, Global Head of Quality Engineering &amp; AI PDLC, S&amp;P Global</div>
+    <div class="pf-pitch">I&rsquo;ve led engineering transformation on both sides of the industry: <b>regulated financial services</b> at S&amp;P Global and Prudential, and <b>technology-first product companies</b> at Audible (an Amazon company) and DoubleVerify. I also build teams from zero &mdash; new quality engineering groups stood up from scratch at Prudential and TheMarkets, and a 4 &rarr; 41 organization at Audible, scaled in 3 months. At S&amp;P: AI-first PDLC framework designed to serve ~1,200 engineers, stood up in 6 months.<span class="pf-citi">For Citi, adoption begins with engineering pull: ORBIT scales through developer preference, shaped by chapter standards and backed by a year-one scorecard Tech and Finance both trust.</span></div>
+    <div class="pf-stats"><span><b>AI-first PDLC framework</b> designed to serve ~1,200 engineers, stood up in 6 months (S&amp;P)</span><span><b>Regulated + tech-first:</b> S&amp;P Global, Prudential, Audible (Amazon)</span><span><b>0 &rarr; 1:</b> new QE groups built from scratch; 4 &rarr; 41 org scaled in 3 months (Audible)</span><span><b>350+</b> engineers &middot; <b>$70M+</b> budget led</span><span><b>$50M+</b> revenue via Audible&rsquo;s NFR Center of Excellence</span><span><b>30% reduction</b> in time-to-market within 9 months (Audible)</span><span><b>15% increase</b> in CSAT &middot; <b>25% reduction</b> in critical customer defects (Audible)</span></div>
+  </div>
+</aside>
+<button class="pf-mini" id="pf-mini" aria-label="See how Sonia Malik would help Citi" aria-controls="pf-float" aria-expanded="false"><span class="pm-av" aria-hidden="true">SM</span>See how I&rsquo;d help Citi &rarr;</button>
+<div class="contact-modal" id="contact-modal" hidden>
+  <div class="cm-backdrop" data-close></div>
+  <div class="cm-card" role="dialog" aria-modal="true" aria-labelledby="cm-title">
+    <button class="cm-close" data-close aria-label="Close">&times;</button>
+    <div class="cm-eyebrow">Next step</div>
+    <h2 class="cm-title serif" id="cm-title">Let&rsquo;s walk through ORBIT together</h2>
+    <p class="cm-lead">In one working session I&rsquo;ll take you through all 15 stages live, the governance design on Arc, and the 12-month rollout plan &mdash; mapped to Citi&rsquo;s AI priorities.</p>
+    <div class="cm-route"><b>Through Citi&rsquo;s standard process:</b> your talent acquisition partner can reach me directly to schedule. I&rsquo;m flexible on timing.</div>
+    <div class="cm-rows">
+      <div class="cm-row"><span class="cm-k">Email</span><span class="cm-v">sonia.malik78@gmail.com</span><button class="cm-copy" data-copy="sonia.malik78@gmail.com">Copy</button></div>
+      <div class="cm-row"><span class="cm-k">Phone</span><span class="cm-v">732-629-1034</span><button class="cm-copy" data-copy="732-629-1034">Copy</button></div>
+      <div class="cm-row"><span class="cm-k">LinkedIn</span><span class="cm-v">linkedin.com/in/sonia-malik-b059705</span><button class="cm-copy" data-copy="https://www.linkedin.com/in/sonia-malik-b059705">Copy</button></div>
+    </div>
+    <div class="cm-status" id="cm-status" aria-live="polite"></div>
+  </div>
+</div>
+<script>
+let currentTab = 'overview';
+const TABS = ['overview', 'dashboard', 'walkthrough', 'governance', 'rollout'];
+// ---------- Cookie-free analytics (GoatCounter): tab opens + 30-second dwell ----------
+const _gcQueue = [];
+function track(path, title) {
+  _gcQueue.push({ path: path, title: title || path, event: true });
+  flushTrack();
+}
+function flushTrack() {
+  if (window.goatcounter && window.goatcounter.count) {
+    while (_gcQueue.length) { try { window.goatcounter.count(_gcQueue.shift()); } catch (e) {} }
+  }
+}
+let _gcTries = 0;
+const _gcTimer = setInterval(() => { flushTrack(); if (++_gcTries > 40 || !_gcQueue.length) clearInterval(_gcTimer); }, 500);
+let _dwellTimer = null;
+function trackTab(name) {
+  track('tab-' + name, 'Tab opened: ' + name);
+  clearTimeout(_dwellTimer);
+  _dwellTimer = setTimeout(() => {
+    if (currentTab === name && document.visibilityState === 'visible') track('tab-' + name + '-30s', 'Stayed 30s+ on: ' + name);
+  }, 30000);
+}
+
+function showTab(name, scroll) {
+  currentTab = name;
+  trackTab(name);
+  document.querySelectorAll('.tab').forEach(t => {
+    const on = t.dataset.tab === name;
+    t.classList.toggle('active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1;
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => { p.hidden = p.id !== 'tab-' + name; });
+  try { history.replaceState(null, '', '#' + name); } catch (e) {}
+  if (scroll) document.getElementById('tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+// ---------- Phase summaries (Walkthrough) ----------
+const PHASES = {
+  discovery:  { t:'Customer value & discovery', b:'Personas, triggers, goals, and business KPIs for the journey.', j:'Persona grounding, goal measurability, KPI alignment, and fairness across customer segments.', h:'A product owner approves the discovery artifact before requirements start.' },
+  pdlc:       { t:'Standard PDLC', b:'Requirements, BDD scenarios, the NFR contract, code, test cases, and automation.', j:'Artifact-aware rubrics at every stage; deterministic security and test checks run first.', h:'Code review, plus hard Dev \u2192 QA and QA \u2192 UAT gates with named sign-off on high-risk changes.' },
+  production: { t:'Production', b:'Canary release plan, rollback triggers, and feature flags.', j:'Release readiness against the NFR contract and error budget.', h:'A named release owner approves on high-risk tiers; nothing auto-deploys to production.' },
+  learning:   { t:'Continuous learning', b:'A synthesis of incidents, feedback sessions, adoption, and CSAT/NPS.', j:'Signal quality, bias checks, and which stage should have caught each escaped defect.', h:'A product/CX lead approves updates to personas and goals for the next cycle.' }
+};
+const PHASE_ORDER = ['discovery', 'pdlc', 'production', 'learning'];
+const PHASE_OF = { discovery:'discovery', requirements:'pdlc', production:'production', learning:'learning', refinement:'learning' };
+function showPhase(key) {
+  const p = PHASES[key], el = document.getElementById('phase-detail');
+  if (!p || !el) return;
+  el.innerHTML = `<div class="pd-t">${p.t}</div><ul class="pd-list"><li><b>Builder produces:</b> ${p.b}</li><li><b>Judge checks:</b> ${p.j}</li><li><b>Human gate:</b> ${p.h}</li></ul>`;
+  el.hidden = false;
+  document.querySelectorAll('#tab-walkthrough .cf-node').forEach((n, i) => n.classList.toggle('active', PHASE_ORDER[i] === key));
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
+}
+function goToStage(key) { showTab('walkthrough'); showPhase(PHASE_OF[key] || 'discovery'); }
+document.querySelectorAll('.tab').forEach((t, i, all) => {
+  t.addEventListener('click', () => showTab(t.dataset.tab, true));
+  t.addEventListener('keydown', ev => {
+    if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+    const next = all[(i + (ev.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
+    showTab(next.dataset.tab); next.focus();
+  });
+});
+showTab(TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview');
+
+const titleWrap = document.querySelector('.title-wrap');
+const orbitTrigger = document.querySelector('.orbit-trigger');
+orbitTrigger.addEventListener('click', () => titleWrap.classList.toggle('tip-open'));
+orbitTrigger.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); titleWrap.classList.toggle('tip-open'); } if (ev.key === 'Escape') titleWrap.classList.remove('tip-open'); });
+
+const backBtn = document.getElementById('back-to-top');
+backBtn.addEventListener('click', () => document.getElementById('tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+const progressFill = document.getElementById('scroll-progress-fill');
+let ticking = false;
+function onScroll() {
+  backBtn.classList.toggle('show', window.scrollY > 500);
+  if (window.scrollY > 300) document.body.classList.add('bar-compact');
+  else if (window.scrollY < 120) document.body.classList.remove('bar-compact');
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  progressFill.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + '%';
+  ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
+onScroll();
+
+
+// ---------- Firmwide scale-out (follows the dashboard month; live dates match the pilot-org tile) ----------
+const BIZ = [
+  { b:'US Consumer Cards', j:'Card dispute resolution', plan:3, live:3 },
+  { b:'Wealth', j:'Client onboarding', plan:6, live:7 },
+  { b:'Services', j:'Payment exception handling', plan:9, live:10 },
+  { b:'Markets', j:'Trade-break resolution' },
+  { b:'Banking', j:'Credit memo preparation' },
+  { b:'Risk', j:'Control-testing evidence' },
+  { b:'Finance', j:'Close and reconciliation' },
+  { b:'Functions', j:'Employee service workflows' }
+];
+window.onDashRender = function (m) {
+  const el = document.getElementById('scale-grid');
+  if (!el) return;
+  el.innerHTML = BIZ.map(x => {
+    let st, label;
+    if (x.live === undefined) { st = 'y2'; label = m >= 12 ? 'Template ready &middot; Year 2' : 'Year 2, after scale decision'; }
+    else if (m >= x.live) { st = 'live'; label = 'Live end to end since M' + x.live + (x.live > x.plan ? ' (plan M' + x.plan + ')' : ''); }
+    else if (m >= x.plan) { st = 'late'; label = 'Planned M' + x.plan + ' &middot; slipping'; }
+    else { st = 'next'; label = 'Planned M' + x.plan; }
+    return `<div class="bz ${st}"><div class="bz-b">${x.b}</div><div class="bz-j">${x.j}</div><div class="bz-s">${label}</div></div>`;
+  }).join('');
+};
+
+// ================= Executive dashboard (simulated 12-month trajectory) =================
+(function () {
+  const S = t => t * t * (3 - 2 * t);                       // S-curve: slow start, fast middle, flattening finish
+  const plan = (b, T) => Array.from({ length: 13 }, (_, m) => b + (T - b) * S(m / 12));
+  const withDev = (b, T, dev) => plan(b, T).map((v, m) => v + dev[m] * (T - b));
+  const quarterly = arr => arr.map((_, m) => arr[Math.floor(m / 3) * 3]);
+
+  const M = [
+    { key:'feedback', group:0, name:'Changes with automated feedback < 15 min', unit:'%', dec:0, base:10, target:80, dir:1, ax:'% of changes',
+      dev:[0,0,.01,.02,-.06,-.07,-.02,0,.01,.02,.01,.01,.01], source:'IDE + pull-request telemetry',
+      note:{4:'Feedback slowed when two pilot teams shared one evaluation cluster. Capacity request raised with the Arc team.',
+            5:'Extra evaluation capacity is being added; feedback times are improving but still below plan.'} },
+    { key:'prcycle', group:0, name:'PR cycle time (open to merge)', unit:' hrs', dec:0, base:52, target:36, dir:-1, ax:'hours',
+      dev:[0,0,.01,.02,.02,.01,.02,.03,.02,.02,.02,.01,.02], source:'Source-control events' },
+    { key:'toil', group:0, name:'Developer time on toil', unit:'%', dec:0, base:35, target:28, dir:-1, ax:'% of time',
+      dev:[0,0,0,.01,.02,.01,0,.01,.02,.02,.01,.02,.02], source:'DevEx pulse + workflow telemetry' },
+    { key:'devex', group:0, name:'Developer satisfaction', unit:' / 5', dec:1, base:3.2, target:3.6, dir:1, ax:'score out of 5',
+      dev:[0,0,0,.02,0,0,-.03,0,0,.01,0,0,.02], quarterly:true, source:'DevEx pulse, incl. customer line of sight' },
+    { key:'pilots', group:1, name:'Pilot orgs operating end to end', unit:'', dec:0, base:0, target:3, dir:1, ax:'pilot orgs',
+      plan:[0,0,0,1,1,1,2,2,2,3,3,3,3], actual:[0,0,0,1,1,1,1,2,2,2,3,3,3], discrete:true, source:'Agent registry on Arc',
+      note:{6:'Second pilot org (Wealth) is a month behind plan, waiting on Arc tool-registry access; escalated with the Arc team.',
+            9:'Third pilot org (Services) is a month behind plan; go-live moved to M10 with its sponsor&rsquo;s agreement.'} },
+    { key:'adoption', group:1, name:'Pilot engineers using ORBIT weekly', unit:'%', dec:0, base:0, target:60, dir:1, ax:'% of pilot engineers',
+      dev:[0,0,.02,.01,-.02,-.13,-.06,-.01,.01,.02,.01,.01,0], source:'ORBIT usage telemetry on Arc',
+      note:{5:'Weekly usage is well below plan while the second pilot team onboards. Recovery action: pairing sessions and squad-level champions for the new team, reviewed weekly.',
+            6:'Recovering, but still below plan in the first month of the champions program.'} },
+    { key:'lead', group:2, name:'Lead time for changes (DORA)', unit:' days', dec:1, base:9, target:6.3, dir:-1, ax:'days',
+      dev:[0,0,.01,.03,.02,.03,.02,.02,.03,.02,.02,.01,0], source:'CI/CD pipeline events' },
+    { key:'cfr', group:2, name:'Change failure rate (DORA)', unit:'%', dec:1, base:8, target:5, dir:-1, ax:'% of deployments',
+      dev:[0,-.02,-.03,-.01,.01,.02,.02,.01,.02,.01,.02,.01,.01], source:'Deployment + incident records' },
+    { key:'csat', group:3, name:'Dispute CSAT', unit:' / 5', dec:1, base:3.4, target:3.7, dir:1, ax:'score out of 5',
+      dev:[0,0,.01,.02,.01,.02,.03,.02,.02,.03,.02,.02,.01], source:'Post-dispute survey' },
+    { key:'cost', group:3, name:'Cost per dispute (index)', unit:'', dec:0, base:100, target:85, dir:-1, ax:'index, baseline = 100',
+      dev:[0,0,0,-.01,-.02,-.03,-.02,-.01,0,.01,.01,.02,.02], source:'Finance cost allocation' }
+  ];
+  M.forEach(x => {
+    if (!x.discrete) { x.plan = plan(x.base, x.target); x.actual = withDev(x.base, x.target, x.dev); }
+    if (x.quarterly) { x.plan = quarterly(x.plan); x.actual = quarterly(x.actual); }
+  });
+  const GROUPS = [
+    'Developer experience: feedback, flow, and focus',
+    'Reference workflow adopted by named pilot orgs',
+    'Delivery telemetry Tech and Finance trust',
+    'Customer and business value'
+  ];
+  const MILESTONES = [
+    { m:0, t:'Baselines captured for DORA, quality score, CSAT, and cost' },
+    { m:1, t:'Pilot journey live on Arc (Discovery \u2192 BDD agents)' },
+    { m:3, t:'First release shipped through ORBIT; first Tech + Finance scorecard' },
+    { m:6, t:'Second journey (Wealth) onboarding; release agent live at L2 with human approval' },
+    { m:9, t:'Independent model-risk validation of judge agents' },
+    { m:12, t:'ORBIT templates published; three named pilot orgs end to end; scale decision' }
+  ];
+
+  function status(x, m) {
+    if (m === 0) return 'base';
+    const a = x.actual[m], p = x.plan[m];
+    if (x.discrete) return a >= p ? 'on' : (a >= p - 1 ? 'risk' : 'off');
+    const range = Math.abs(x.target - x.base) || 1;
+    const ahead = ((a - p) * x.dir) / range;               // + ahead of plan, - behind
+    return ahead >= -0.04 ? 'on' : (ahead >= -0.10 ? 'risk' : 'off');
+  }
+  const LABEL = { base:'Baseline', on:'On track', risk:'At risk', off:'Off track' };
+  const noteFor = (x, m) => (x.note && typeof x.note === 'object') ? (x.note[m] || 'Below plan this month; owner reviewing.') : (x.note || 'Below plan this month; owner reviewing.');
+  const fmt = (x, v) => v.toFixed(x.dec) + x.unit;
+
+  function spark(x, m, st) {
+    const w = 240, h = 72, L = 34, R = 6, T = 6, B = 14;
+    const all = x.plan.concat(x.actual);
+    let lo = Math.min(...all), hi = Math.max(...all); if (hi === lo) hi = lo + 1;
+    const X = i => L + i * (w - L - R) / 12;
+    const Y = v => T + (hi - v) / (hi - lo) * (h - T - B);
+    const pl = x.plan.map((v, i) => X(i) + ',' + Y(v)).join(' ');
+    const ac = x.actual.slice(0, m + 1).map((v, i) => X(i) + ',' + Y(v)).join(' ');
+    const lab = v => v.toFixed(x.dec);
+    return `<svg class="db-spark" viewBox="0 0 ${w} ${h}" role="img" aria-label="${x.name}: plan versus actual by month">
+      <line x1="${L}" y1="${T}" x2="${L}" y2="${h - B}" stroke="var(--line-strong)" stroke-width="1"/>
+      <line x1="${L}" y1="${h - B}" x2="${w - R}" y2="${h - B}" stroke="var(--line-strong)" stroke-width="1"/>
+      <text x="${L - 4}" y="${T + 4}" text-anchor="end" class="sp-ax">${lab(hi)}</text>
+      <text x="${L - 4}" y="${h - B}" text-anchor="end" class="sp-ax">${lab(lo)}</text>
+      <text x="${L}" y="${h - 2}" text-anchor="start" class="sp-ax">M0</text>
+      <text x="${w - R}" y="${h - 2}" text-anchor="end" class="sp-ax">M12</text>
+      <polyline points="${pl}" fill="none" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      ${m > 0 ? `<polyline points="${ac}" fill="none" stroke="var(--ink)" stroke-width="2"/>` : ''}
+      <circle cx="${X(m)}" cy="${Y(x.actual[m])}" r="4" class="dot-${st}"/>
+    </svg>
+    <div class="db-axis">Y: ${x.ax} &middot; X: month &middot; dashed = plan, solid = actual</div>`;
+  }
+
+  const monthEl = document.getElementById('db-month');
+  const labelEl = document.getElementById('db-month-label');
+  const playBtn = document.getElementById('db-play');
+
+  function render(m) {
+    if (window.onDashRender) window.onDashRender(m);
+    labelEl.textContent = m === 0 ? 'Month 0 \u00b7 baseline' : 'Month ' + m + ' of 12';
+    // timeline
+    document.getElementById('db-timeline').innerHTML = Array.from({ length: 13 }, (_, i) => {
+      const ms = MILESTONES.find(q => q.m === i);
+      return `<button class="db-tick ${i <= m ? 'past' : ''} ${i === m ? 'now' : ''} ${ms ? 'ms' : ''}" data-m="${i}" title="${ms ? 'M' + i + ': ' + ms.t : 'Month ' + i}"><span>M${i}</span></button>`;
+    }).join('');
+    document.querySelectorAll('.db-tick').forEach(t => t.addEventListener('click', () => { stop(); set(+t.dataset.m); }));
+    // summary
+    const counts = { base:0, on:0, risk:0, off:0 };
+    M.forEach(x => counts[status(x, m)]++);
+    document.getElementById('db-summary').innerHTML = m === 0
+      ? `<span class="db-pill base">Baseline month: all ${M.length} measures being established</span>`
+      : `<span class="db-pill on">${counts.on} on track</span><span class="db-pill risk">${counts.risk} at risk</span><span class="db-pill off">${counts.off} off track</span>`;
+    // groups
+    document.getElementById('db-groups').innerHTML = GROUPS.map((g, gi) => `
+      <div class="db-group">
+        <h3 class="oc-k">Year-one success measure ${gi + 1} &middot; ${g}</h3>
+        <div class="db-grid">${M.filter(x => x.group === gi).map(x => {
+          const st = status(x, m);
+          return `<div class="db-tile ${st}">
+            <div class="db-name">${x.name}</div>
+            <div class="db-val">${fmt(x, x.actual[m])}</div>
+            <div class="db-target">Target ${fmt(x, x.target)} &middot; baseline ${fmt(x, x.base)}</div>
+            ${spark(x, m, st)}
+            <div class="db-foot"><span class="db-pill ${st}">${LABEL[st]}</span><span class="db-src">${x.source}</span></div>
+          </div>`;
+        }).join('')}</div>
+      </div>`).join('');
+    // notes
+    const reached = MILESTONES.filter(q => q.m === m);
+    const flagged = M.filter(x => status(x, m) === 'risk' || status(x, m) === 'off');
+    let html = '';
+    reached.forEach(q => { html += `<div class="db-note ms"><b>Milestone reached:</b> ${q.t}</div>`; });
+    flagged.forEach(x => { html += `<div class="db-note ${status(x, m)}"><b>${x.name} &mdash; ${LABEL[status(x, m)].toLowerCase()}:</b> ${noteFor(x, m)}</div>`; });
+    if (!html) html = '<div class="db-note">No milestones or exceptions this month. Every measure is on plan.</div>';
+    document.getElementById('db-notes').innerHTML = html;
+  }
+
+  let timer = null;
+  function set(m) { monthEl.value = m; render(m); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; playBtn.innerHTML = '&#9654; Play year'; } }
+  playBtn.addEventListener('click', () => {
+    if (timer) { stop(); return; }
+    let m = +monthEl.value; if (m >= 12) m = 0; set(m);
+    playBtn.innerHTML = '&#10074;&#10074; Pause';
+    timer = setInterval(() => { m += 1; set(m); if (m >= 12) stop(); }, 900);
+  });
+  monthEl.addEventListener('input', () => { stop(); render(+monthEl.value); });
+  render(+monthEl.value);
+})();
+
+// ---------- Contact card (email links are blocked inside the page viewer) ----------
+const cm = document.getElementById('contact-modal');
+let cmReturn = null;
+function openContact() {
+  track('open-contact', 'Opened contact card');
+  cmReturn = document.activeElement;
+  cm.hidden = false;
+  document.getElementById('cm-status').textContent = '';
+  cm.querySelector('.cm-close').focus();
+}
+function closeContact() { cm.hidden = true; if (cmReturn) cmReturn.focus(); }
+cm.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeContact));
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !cm.hidden) closeContact(); });
+cm.querySelectorAll('.cm-copy').forEach(b => b.addEventListener('click', async () => {
+  const text = b.dataset.copy, status = document.getElementById('cm-status');
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+    try { const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+          document.body.appendChild(t); t.select(); ok = document.execCommand('copy'); t.remove(); } catch (e2) {}
+  }
+  if (ok) { b.textContent = 'Copied'; status.textContent = 'Copied: ' + text; setTimeout(() => { b.textContent = 'Copy'; }, 1800); }
+  else { status.textContent = 'Copy isn\u2019t available here \u2014 please select the text: ' + text; }
+}));
+
+// ---------- Floating profile card: collapsed by default ----------
+(function () {
+  const bar = document.getElementById('pf-float'), mini = document.getElementById('pf-mini');
+  const moreBtn = document.getElementById('pf-more-btn'), more = document.getElementById('pf-more');
+  let open = false, openedAt = 0;
+  moreBtn.hidden = true; more.hidden = false;          // opened card shows the full bio and all chips
+  function set(v) {
+    open = v;
+    bar.classList.toggle('show', open);
+    mini.hidden = open;
+    mini.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.classList.toggle('pf-on', open);
+    if (open) openedAt = window.scrollY;
+  }
+  // Wide screens: docked side panel that shifts the page (stays open while you work).
+  // Narrow screens: centered sheet over a dimmed backdrop (tap outside or scroll to close).
+  const docked = () => !!(window.matchMedia && window.matchMedia('(min-width: 900px)').matches);
+  mini.addEventListener('click', ev => { ev.stopPropagation(); set(true); track('open-profile', 'Opened "See how I\'d help Citi"'); });
+  document.getElementById('pf-x').addEventListener('click', () => { set(false); mini.focus(); });
+  document.addEventListener('click', ev => { if (open && !docked() && !bar.contains(ev.target)) set(false); });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && open) { set(false); mini.focus(); } });
+  window.addEventListener('scroll', () => { if (open && !docked() && Math.abs(window.scrollY - openedAt) > 60) set(false); }, { passive: true });
+  set(false);
+})();
+
+// ---------- Tooltips close on outside click or Escape ----------
+(function () {
+  function closeTips() {
+    document.querySelectorAll('.name-tip.open').forEach(t => t.classList.remove('open'));
+    const tw = document.querySelector('.title-wrap'); if (tw) tw.classList.remove('tip-open');
+    const a = document.activeElement;
+    if (a && a.classList && (a.classList.contains('name-tip') || a.classList.contains('orbit-trigger'))) a.blur();
+  }
+  document.addEventListener('click', ev => { if (!ev.target.closest('.name-tip, .orbit-trigger, .orbit-tip')) closeTips(); });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeTips(); });
+})();
+
+
+
+// ---------- Profile card on the name (closes on outside click or Escape) ----------
+(function () {
+  const wrap = document.querySelector('.me-wrap'), trig = document.getElementById('me-trigger');
+  if (!wrap || !trig) return;
+  function set(open) { wrap.classList.toggle('open', open); trig.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  trig.addEventListener('click', ev => { ev.stopPropagation(); set(!wrap.classList.contains('open')); });
+  document.addEventListener('click', ev => { if (!wrap.contains(ev.target)) { set(false); if (document.activeElement === trig) trig.blur(); } });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { set(false); if (wrap.contains(document.activeElement)) document.activeElement.blur(); } });
+})();
+</script>
+</body>
+</html>
